@@ -1,23 +1,18 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using WordForge.Models;
 
 namespace WordForge.Panes
 {
     public partial class ManuscriptViewModel : ObservableObject
     {
         public ObservableCollection<ChapterNode> ChapterList { get; } = new();
-        [ObservableProperty]
-        private string projectInfoDisplay;
+
 
         public RelayCommand<ChapterNode> RenameChapterCommand { get; }
         public RelayCommand<ChapterNode> DeleteChapterCommand { get; }
         public RelayCommand<ChapterNode> InsertChapterAboveCommand { get; }
         public RelayCommand<ChapterNode> InsertChapterBelowCommand { get; }
-
-        [ObservableProperty]
-        private bool isDirty;
 
         [ObservableProperty]
         private string editorText;
@@ -39,6 +34,7 @@ namespace WordForge.Panes
             DeleteChapterCommand = new RelayCommand<ChapterNode>(OnDeleteChapter);
             InsertChapterAboveCommand = new RelayCommand<ChapterNode>(OnInsertChapterAbove);
             InsertChapterBelowCommand = new RelayCommand<ChapterNode>(OnInsertChapterBelow);
+
         }
 
         private void LoadSampleChapters()
@@ -52,29 +48,6 @@ namespace WordForge.Panes
 
             ChapterList.Add(ch1);
             ChapterList.Add(ch2);
-        }
-
-        public void LoadFromProject(ProjectData project)
-        {
-            ChapterList.Clear();
-            if (project?.Chapters != null)
-            {
-                foreach (var chapter in project.Chapters)
-                {
-                    ChapterList.Add(chapter);
-                }
-            }
-        }
-
-        public ProjectData ToProjectData(string title, string author, string series)
-        {
-            return new ProjectData
-            {
-                Title = title,
-                Author = author,
-                Series = series,
-                Chapters = new System.Collections.Generic.List<ChapterNode>(ChapterList)
-            };
         }
 
         private void OnRenameScene(SceneNode scene)
@@ -116,5 +89,6 @@ namespace WordForge.Panes
         {
             System.Windows.MessageBox.Show($"[Insert Chapter Below] {chapter?.Title}");
         }
+
     }
 }

@@ -12,11 +12,6 @@ namespace WordForge.Panes
             this.DataContext = new ProjectViewModel();
         }
 
-        public string ProjectTitle => (DataContext as ProjectViewModel)?.Title;
-        public string ProjectSeries => (DataContext as ProjectViewModel)?.Series;
-
-        public string ProjectAuthor => (DataContext as ProjectViewModel)?.Author;
-
         private void RecentProjectSelected(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count > 0 && DataContext is ProjectViewModel vm)

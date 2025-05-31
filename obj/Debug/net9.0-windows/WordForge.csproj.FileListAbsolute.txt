@@ -1,5 +1,6 @@
 C:\Users\archi\source\repos\WordForge\WordForge\obj\Debug\net9.0-windows\WordForge.csproj.AssemblyReference.cache
 C:\Users\archi\source\repos\WordForge\WordForge\obj\Debug\net9.0-windows\menus\ManuscriptTab.baml
+C:\Users\archi\source\repos\WordForge\WordForge\obj\Debug\net9.0-windows\panes\ManuscriptView.baml
 C:\Users\archi\source\repos\WordForge\WordForge\obj\Debug\net9.0-windows\panes\ProjectView.baml
 C:\Users\archi\source\repos\WordForge\WordForge\obj\Debug\net9.0-windows\App.baml
 C:\Users\archi\source\repos\WordForge\WordForge\obj\Debug\net9.0-windows\MainWindow.g.cs
@@ -76,7 +77,6 @@ C:\Users\archi\source\repos\WordForge\WordForge\bin\Debug\net9.0-windows\runtime
 C:\Users\archi\source\repos\WordForge\WordForge\bin\Debug\net9.0-windows\runtimes\win-x64\native\libSkiaSharp.dll
 C:\Users\archi\source\repos\WordForge\WordForge\bin\Debug\net9.0-windows\runtimes\win-x86\native\libSkiaSharp.dll
 C:\Users\archi\source\repos\WordForge\WordForge\obj\Debug\net9.0-windows\MainWindow.baml
-C:\Users\archi\source\repos\WordForge\WordForge\obj\Debug\net9.0-windows\panes\ManuscriptView.baml
 C:\Users\archi\source\repos\WordForge\WordForge\obj\Debug\net9.0-windows\WordForge.g.resources
 C:\Users\archi\source\repos\WordForge\WordForge\obj\Debug\net9.0-windows\WordForge.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\archi\source\repos\WordForge\WordForge\obj\Debug\net9.0-windows\WordForge.AssemblyInfoInputs.cache
