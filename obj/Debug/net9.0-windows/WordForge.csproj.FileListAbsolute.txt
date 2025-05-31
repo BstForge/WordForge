@@ -88,3 +88,4 @@ C:\Users\archi\source\repos\WordForge\WordForge\obj\Debug\net9.0-windows\refint\
 C:\Users\archi\source\repos\WordForge\WordForge\obj\Debug\net9.0-windows\WordForge.pdb
 C:\Users\archi\source\repos\WordForge\WordForge\obj\Debug\net9.0-windows\WordForge.genruntimeconfig.cache
 C:\Users\archi\source\repos\WordForge\WordForge\obj\Debug\net9.0-windows\ref\WordForge.dll
+C:\Users\archi\source\repos\WordForge\WordForge\obj\Debug\net9.0-windows\WordForge.sourcelink.json

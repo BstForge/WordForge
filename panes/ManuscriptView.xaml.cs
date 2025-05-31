@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using WordForge.models;
 
 namespace WordForge.Panes
 {

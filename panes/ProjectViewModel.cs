@@ -1,7 +1,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Windows.Input;
+using WordForge.models;
 
 namespace WordForge.Panes
 {
@@ -58,9 +61,34 @@ namespace WordForge.Panes
 
             string path = dialog.FileName;
 
+            var project = new ProjectData
+            {
+                Title = this.Title,
+                Author = this.Author,
+                Series = this.Series,
+                Chapters = new ObservableCollection<ChapterNode>
+                {
+                    new ChapterNode("Chapter 1")
+                    {
+                        Scenes = new ObservableCollection<SceneNode>
+                        {
+                            new SceneNode("Scene 1.1", "Scene text here..."),
+                            new SceneNode("Scene 1.2", "More text...")
+                        }
+                    }
+                }
+            };
+
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            };
+
             try
             {
-                System.IO.File.WriteAllText(path, $"# WordForge Project\nTitle: {Title}\nAuthor: {Author}\nSeries: {Series}");
+                string json = JsonSerializer.Serialize(project, options);
+                System.IO.File.WriteAllText(path, json);
                 Services.RecentProjectsService.Add(path);
                 System.Windows.Application.Current.MainWindow?.GetType()
                     .GetMethod("SwitchToManuscriptView")

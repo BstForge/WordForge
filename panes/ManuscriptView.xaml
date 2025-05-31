@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:avalonEdit="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:local="clr-namespace:WordForge.Panes"
+             xmlns:models="clr-namespace:WordForge.models"
              mc:Ignorable="d"
              d:DesignHeight="500" d:DesignWidth="800">
 
@@ -21,7 +22,7 @@
                       SelectedItemChanged="TreeView_SelectedItemChanged"
                       FontSize="13">
                 <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type local:ChapterNode}" ItemsSource="{Binding Scenes}">
+                    <HierarchicalDataTemplate DataType="{x:Type models:ChapterNode}" ItemsSource="{Binding Scenes}">
                         <TextBlock Text="{Binding Title}" FontWeight="Bold">
                             <TextBlock.ContextMenu>
                                 <ContextMenu>
@@ -34,7 +35,7 @@
                             </TextBlock.ContextMenu>
                         </TextBlock>
                     </HierarchicalDataTemplate>
-                    <DataTemplate DataType="{x:Type local:SceneNode}">
+                    <DataTemplate DataType="{x:Type models:SceneNode}">
                         <TextBlock Text="{Binding Title}">
                             <TextBlock.ContextMenu>
                                 <ContextMenu>
