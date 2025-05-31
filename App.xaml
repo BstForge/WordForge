@@ -1,0 +1,24 @@
+<Application x:Class="WordForge.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:fluent="urn:fluent-ribbon"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/Fluent;component/Themes/Generic.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Ribbon Styling -->
+            <Color x:Key="RibbonTabControlSelectedBackgroundColor">#FFCCE5FF</Color> <!-- Light Blue -->
+            <Color x:Key="RibbonTabControlMouseOverBackgroundColor">#FFEAF6FF</Color>
+            <Color x:Key="RibbonTabItemDefaultBackground">White</Color>
+
+            <!-- File Menu Blue Button -->
+            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.BackstageButtonBackground" Color="#0072C6" />
+            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.BackstageButtonBackgroundHovered" Color="#005A9E" />
+            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.BackstageButtonBackgroundPressed" Color="#004578" />
+            <SolidColorBrush x:Key="Fluent.Ribbon.Brushes.BackstageButtonForeground" Color="White" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

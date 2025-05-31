@@ -1,0 +1,51 @@
+<fluent:RibbonWindow x:Class="WordForge.MainWindow"
+                     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                     xmlns:fluent="urn:fluent-ribbon"
+                     xmlns:local="clr-namespace:WordForge.Panes"
+                     mc:Ignorable="d"
+                     Title="WordForge"
+                     Width="1200"
+                     Height="800">
+
+    <fluent:RibbonWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="menus/ManuscriptTab.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </fluent:RibbonWindow.Resources>
+
+    <DockPanel>
+        <!-- Ribbon -->
+        <fluent:Ribbon x:Name="MainRibbon" DockPanel.Dock="Top">
+            <fluent:Ribbon.Menu>
+                <fluent:Backstage>
+                    <fluent:BackstageTabControl>
+                        <fluent:Button Header="New Project" Click="OnNewProjectClick"/>
+                        <fluent:Button Header="Load Project" Click="OnLoadProjectClick"/>
+                        <fluent:Button Header="Save" Click="OnSaveClick"/>
+                        <fluent:Button Header="Export" Click="OnExportClick"/>
+                        <fluent:Button Header="Print" Click="OnPrintClick"/>
+                        <fluent:Button Header="Exit" Click="OnExitClick"/>
+                    </fluent:BackstageTabControl>
+                </fluent:Backstage>
+            </fluent:Ribbon.Menu>
+
+            <StaticResource ResourceKey="ManuscriptRibbon" />
+            <fluent:RibbonTabItem Header="Outline"/>
+            <fluent:RibbonTabItem Header="Timeline"/>
+            <fluent:RibbonTabItem Header="Character Bible"/>
+            <fluent:RibbonTabItem Header="Location Bible"/>
+            <fluent:RibbonTabItem Header="Element Bible"/>
+            <fluent:RibbonTabItem Header="Options"/>
+        </fluent:Ribbon>
+
+        <!-- Content Area -->
+        <ContentControl x:Name="MainContent">
+            <local:ProjectView />
+        </ContentControl>
+    </DockPanel>
+</fluent:RibbonWindow>
