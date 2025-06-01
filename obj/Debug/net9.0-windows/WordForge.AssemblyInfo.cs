@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WordForge")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3dba9238450b5a8ce186c1830ba6c1dd1d8325fc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f4c73ab4426a2cc8887f8799f9061bd688e36641")]
 [assembly: System.Reflection.AssemblyProductAttribute("WordForge")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WordForge")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
