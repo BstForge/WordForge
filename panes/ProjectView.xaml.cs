@@ -1,6 +1,4 @@
 using System.Windows.Controls;
-using System.Windows;
-using WordForge.Panes;
 
 namespace WordForge.Panes
 {
@@ -9,24 +7,13 @@ namespace WordForge.Panes
         public ProjectView()
         {
             InitializeComponent();
-            this.DataContext = new ProjectViewModel();
         }
 
-        private void RecentProjectSelected(object sender, SelectionChangedEventArgs e)
+        private void RecentProjects_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems.Count > 0 && DataContext is ProjectViewModel vm)
+            if (DataContext is ProjectViewModel viewModel && viewModel.SelectedRecent != null)
             {
-                string selectedPath = e.AddedItems[0] as string;
-                if (!string.IsNullOrEmpty(selectedPath))
-                {
-                    vm.SelectRecentCommand.Execute(selectedPath);
-                }
-            }
-
-            // Deselect after triggering
-            if (sender is ListBox listBox)
-            {
-                listBox.SelectedItem = null;
+                viewModel.SelectRecentCommand.Execute(viewModel.SelectedRecent);
             }
         }
     }

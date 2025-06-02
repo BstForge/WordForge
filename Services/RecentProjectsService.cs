@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using WordForge.Properties;
 
-
 namespace WordForge.Services
 {
     public static class RecentProjectsService
@@ -34,6 +33,19 @@ namespace WordForge.Services
 
             settings[SettingKey] = paths;
             settings.Save();
+        }
+
+        public static void Remove(string filePath)
+        {
+            var settings = Properties.Settings.Default;
+            var paths = settings[SettingKey] as StringCollection ?? new StringCollection();
+
+            if (paths.Contains(filePath))
+            {
+                paths.Remove(filePath);
+                settings[SettingKey] = paths;
+                settings.Save();
+            }
         }
     }
 }

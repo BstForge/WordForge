@@ -1,13 +1,12 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
-using System.Text.Json;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using Ookii.Dialogs.Wpf;
 using WordForge.models;
 using WordForge.Services;
-using WordForge.Panes;
 
 namespace WordForge.Panes
 {
@@ -78,12 +77,12 @@ namespace WordForge.Panes
                 Title = "Open Project"
             };
 
-            if (dialog.ShowDialog() != true || !System.IO.File.Exists(dialog.FileName)) return;
+            if (dialog.ShowDialog() != true || !File.Exists(dialog.FileName)) return;
 
             try
             {
-                string json = System.IO.File.ReadAllText(dialog.FileName);
-                var project = JsonSerializer.Deserialize<ProjectData>(json);
+                string json = File.ReadAllText(dialog.FileName);
+                var project = System.Text.Json.JsonSerializer.Deserialize<ProjectData>(json);
                 CurrentProjectService.Instance.Load(project, dialog.FileName);
                 Services.RecentProjectsService.Add(dialog.FileName);
 
@@ -106,10 +105,10 @@ namespace WordForge.Panes
                     vm.SelectedScene != null)
                 {
                     vm.SelectedScene.Content = mv.Editor.Text;
-                    MessageBox.Show("Saving content: " + vm.SelectedScene.Content);
                 }
 
                 CurrentProjectService.Instance.Save();
+                MessageBox.Show("Project saved successfully.", "Save", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (System.Exception ex)
             {
@@ -129,20 +128,38 @@ namespace WordForge.Panes
 
         private void OnSelectRecent(string path)
         {
-            if (System.IO.File.Exists(path))
+            if (!File.Exists(path))
             {
+                MessageBox.Show("Project file not found.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Services.RecentProjectsService.Remove(path);
+                LoadRecentProjects();
+                return;
+            }
+
+            try
+            {
+                string json = File.ReadAllText(path);
+                var project = System.Text.Json.JsonSerializer.Deserialize<ProjectData>(json);
+                CurrentProjectService.Instance.Load(project, path);
                 Services.RecentProjectsService.Add(path);
+
                 if (Application.Current.MainWindow is WordForge.MainWindow mw)
                     mw.SwitchToManuscriptView();
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show($"Failed to load project: {ex.Message}", "Load Error");
             }
         }
 
         private void LoadRecentProjects()
         {
             RecentProjects.Clear();
-            RecentProjects.Add("Project1.forge");
-            RecentProjects.Add("Project2.forge");
-            RecentProjects.Add("Project3.forge");
+            foreach (var path in Services.RecentProjectsService.Load())
+            {
+                if (File.Exists(path))
+                    RecentProjects.Add(path);
+            }
         }
     }
 }
