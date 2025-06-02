@@ -24,12 +24,12 @@
             <fluent:Ribbon.Menu>
                 <fluent:Backstage>
                     <fluent:BackstageTabControl>
-                        <fluent:Button Header="New Project" Click="OnNewProjectClick"/>
-                        <fluent:Button Header="Load Project" Click="OnLoadProjectClick"/>
-                        <fluent:Button Header="Save" Click="OnSaveClick"/>
-                        <fluent:Button Header="Export" Click="OnExportClick"/>
-                        <fluent:Button Header="Print" Click="OnPrintClick"/>
-                        <fluent:Button Header="Exit" Click="OnExitClick"/>
+                        <fluent:Button Header="New Project" Command="{Binding NewCommand}"/>
+                        <fluent:Button Header="Load Project" Command="{Binding LoadCommand}"/>
+                        <fluent:Button Header="Save" Command="{Binding SaveCommand}"/>
+                        <fluent:Button Header="Export" />
+                        <fluent:Button Header="Print" />
+                        <fluent:Button Header="Exit" Command="ApplicationCommands.Close"/>
                     </fluent:BackstageTabControl>
                 </fluent:Backstage>
             </fluent:Ribbon.Menu>

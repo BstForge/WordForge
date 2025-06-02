@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using WordForge.models;
+using WordForge.Services;
 
 namespace WordForge.Panes
 {
@@ -12,20 +13,25 @@ namespace WordForge.Panes
         {
             InitializeComponent();
             viewModel = new ManuscriptViewModel();
+            viewModel.SelectedScene = null;
             DataContext = viewModel;
         }
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (e.NewValue is SceneNode scene)
+            if (viewModel.SelectedScene != null)
             {
-                if (viewModel.SelectedScene != null)
-                {
-                    viewModel.SelectedScene.Content = Editor.Text;
-                }
+                viewModel.SelectedScene.Content = Editor.Text;
+            }
 
-                viewModel.SelectedScene = scene;
-                Editor.Text = scene.Content ?? string.Empty;
+            if (e.NewValue is SceneNode newScene)
+            {
+                viewModel.SelectedScene = newScene;
+                Editor.Text = newScene.Content ?? string.Empty;
+            }
+            else
+            {
+                Editor.Text = string.Empty;
             }
         }
 

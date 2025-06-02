@@ -1,5 +1,5 @@
-using System.Windows.Controls;
 using System.Windows;
+using System.Windows.Controls;
 using Fluent;
 using WordForge.Panes;
 
@@ -7,11 +7,17 @@ namespace WordForge
 {
     public partial class MainWindow : RibbonWindow
     {
+        private readonly ProjectViewModel projectViewModel;
         private ProjectView ProjectView;
+        private ManuscriptView manuscriptView;
 
         public MainWindow()
         {
             InitializeComponent();
+
+            projectViewModel = new ProjectViewModel();
+            this.DataContext = projectViewModel;
+
             ProjectView = new ProjectView();
             ShowProjectView();
         }
@@ -21,51 +27,15 @@ namespace WordForge
             MainContent.Content = ProjectView;
         }
 
-        private void OnNewProjectClick(object sender, RoutedEventArgs e)
-        {
-            ShowProjectView();
-        }
-
-        private void OnLoadProjectClick(object sender, RoutedEventArgs e)
-        {
-            var dialog = new Ookii.Dialogs.Wpf.VistaOpenFileDialog
-            {
-                Filter = "WordForge Project (*.forge)|*.forge",
-                Title = "Open Project"
-            };
-
-            bool? result = dialog.ShowDialog();
-            if (result == true && System.IO.File.Exists(dialog.FileName))
-            {
-                Services.RecentProjectsService.Add(dialog.FileName);
-                SwitchToManuscriptView();
-            }
-        }
-
-        private void OnSaveClick(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Save functionality coming soon.", "Not Implemented");
-        }
-
-        private void OnExportClick(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Export functionality coming soon.", "Not Implemented");
-        }
-
-        private void OnPrintClick(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Print functionality coming soon.", "Not Implemented");
-        }
-
-        private void OnExitClick(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
-        }
-
         public void SwitchToManuscriptView()
         {
-            var view = new ManuscriptView();
-            MainContent.Content = view;
+            manuscriptView = new ManuscriptView();
+            MainContent.Content = manuscriptView;
+        }
+
+        public ProjectViewModel GetProjectViewModel()
+        {
+            return projectViewModel;
         }
     }
 }

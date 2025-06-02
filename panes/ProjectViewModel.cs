@@ -2,30 +2,27 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.Windows;
 using System.Windows.Input;
+using Ookii.Dialogs.Wpf;
 using WordForge.models;
+using WordForge.Services;
+using WordForge.Panes;
 
 namespace WordForge.Panes
 {
     public partial class ProjectViewModel : ObservableObject
     {
-        [ObservableProperty]
-        private string title;
-
-        [ObservableProperty]
-        private string series;
-
-        [ObservableProperty]
-        private string author;
-
-        [ObservableProperty]
-        private string selectedRecent;
+        [ObservableProperty] private string title;
+        [ObservableProperty] private string series;
+        [ObservableProperty] private string author;
+        [ObservableProperty] private string selectedRecent;
 
         public ObservableCollection<string> RecentProjects { get; } = new();
 
         public ICommand CreateCommand { get; }
         public ICommand LoadCommand { get; }
+        public ICommand SaveCommand { get; }
         public ICommand NewCommand { get; }
         public ICommand SelectRecentCommand { get; }
 
@@ -33,6 +30,7 @@ namespace WordForge.Panes
         {
             CreateCommand = new RelayCommand(OnCreate);
             LoadCommand = new RelayCommand(OnLoad);
+            SaveCommand = new RelayCommand(OnSave);
             NewCommand = new RelayCommand(OnNew);
             SelectRecentCommand = new RelayCommand<string>(OnSelectRecent);
 
@@ -43,11 +41,11 @@ namespace WordForge.Panes
         {
             if (string.IsNullOrWhiteSpace(Title) || string.IsNullOrWhiteSpace(Author))
             {
-                System.Windows.MessageBox.Show("Title and Author are required.", "Missing Information");
+                MessageBox.Show("Title and Author are required.", "Missing Information");
                 return;
             }
 
-            var dialog = new Ookii.Dialogs.Wpf.VistaSaveFileDialog
+            var dialog = new VistaSaveFileDialog
             {
                 Filter = "WordForge Project (*.forge)|*.forge",
                 DefaultExt = ".forge",
@@ -55,66 +53,67 @@ namespace WordForge.Panes
                 Title = "Save New Project As..."
             };
 
-            bool? result = dialog.ShowDialog();
-            if (result != true)
-                return;
-
-            string path = dialog.FileName;
-
-            var project = new ProjectData
-            {
-                Title = this.Title,
-                Author = this.Author,
-                Series = this.Series,
-                Chapters = new ObservableCollection<ChapterNode>
-                {
-                    new ChapterNode("Chapter 1")
-                    {
-                        Scenes = new ObservableCollection<SceneNode>
-                        {
-                            new SceneNode("Scene 1.1", "Scene text here..."),
-                            new SceneNode("Scene 1.2", "More text...")
-                        }
-                    }
-                }
-            };
-
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-            };
+            if (dialog.ShowDialog() != true) return;
 
             try
             {
-                string json = JsonSerializer.Serialize(project, options);
-                System.IO.File.WriteAllText(path, json);
-                Services.RecentProjectsService.Add(path);
-                System.Windows.Application.Current.MainWindow?.GetType()
-                    .GetMethod("SwitchToManuscriptView")
-                    ?.Invoke(System.Windows.Application.Current.MainWindow, null);
+                CurrentProjectService.Instance.CreateNew(Title, Author, Series, dialog.FileName);
+                CurrentProjectService.Instance.Save();
+                Services.RecentProjectsService.Add(dialog.FileName);
+
+                if (Application.Current.MainWindow is WordForge.MainWindow mw)
+                    mw.SwitchToManuscriptView();
             }
             catch (System.Exception ex)
             {
-                System.Windows.MessageBox.Show($"Failed to save project: {ex.Message}", "Error");
+                MessageBox.Show($"Failed to save project: {ex.Message}", "Error");
             }
         }
 
         private void OnLoad()
         {
-            var dialog = new Ookii.Dialogs.Wpf.VistaOpenFileDialog
+            var dialog = new VistaOpenFileDialog
             {
                 Filter = "WordForge Project (*.forge)|*.forge",
                 Title = "Open Project"
             };
 
-            bool? result = dialog.ShowDialog();
-            if (result == true && System.IO.File.Exists(dialog.FileName))
+            if (dialog.ShowDialog() != true || !System.IO.File.Exists(dialog.FileName)) return;
+
+            try
             {
+                string json = System.IO.File.ReadAllText(dialog.FileName);
+                var project = JsonSerializer.Deserialize<ProjectData>(json);
+                CurrentProjectService.Instance.Load(project, dialog.FileName);
                 Services.RecentProjectsService.Add(dialog.FileName);
-                System.Windows.Application.Current.MainWindow?.GetType()
-                    .GetMethod("SwitchToManuscriptView")
-                    ?.Invoke(System.Windows.Application.Current.MainWindow, null);
+
+                if (Application.Current.MainWindow is WordForge.MainWindow mw)
+                    mw.SwitchToManuscriptView();
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show($"Failed to load project: {ex.Message}", "Load Error");
+            }
+        }
+
+        private void OnSave()
+        {
+            try
+            {
+                if (Application.Current.MainWindow is WordForge.MainWindow mw &&
+                    mw.MainContent.Content is ManuscriptView mv &&
+                    mv.DataContext is ManuscriptViewModel vm &&
+                    vm.SelectedScene != null)
+                {
+                    vm.SelectedScene.Content = mv.Editor.Text;
+                    MessageBox.Show("Project saved successfully.", "Save", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+
+                CurrentProjectService.Instance.Save();
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show($"Failed to save project: {ex.Message}", "Save Error");
             }
         }
 
@@ -130,15 +129,13 @@ namespace WordForge.Panes
             if (System.IO.File.Exists(path))
             {
                 Services.RecentProjectsService.Add(path);
-                System.Windows.Application.Current.MainWindow?.GetType()
-                    .GetMethod("SwitchToManuscriptView")
-                    ?.Invoke(System.Windows.Application.Current.MainWindow, null);
+                if (Application.Current.MainWindow is WordForge.MainWindow mw)
+                    mw.SwitchToManuscriptView();
             }
         }
 
         private void LoadRecentProjects()
         {
-            // Temporary stub
             RecentProjects.Clear();
             RecentProjects.Add("Project1.forge");
             RecentProjects.Add("Project2.forge");

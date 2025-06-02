@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "GTDLBuWXvNc=",
+  "dgSpecHash": "evwu0ZHNepI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\archi\\source\\repos\\WordForge\\WordForge\\WordForge.csproj",
+  "projectFilePath": "C:\\Users\\archi\\source\\repos\\WordForge\\WordForge\\WordForge\\WordForge.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\archi\\.nuget\\packages\\avalonedit\\6.3.1.120\\avalonedit.6.3.1.120.nupkg.sha512",
     "C:\\Users\\archi\\.nuget\\packages\\communitytoolkit.mvvm\\8.4.0\\communitytoolkit.mvvm.8.4.0.nupkg.sha512",

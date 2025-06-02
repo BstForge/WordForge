@@ -2740,11 +2740,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\archi\\source\\repos\\WordForge\\WordForge\\WordForge.csproj",
+      "projectUniqueName": "C:\\Users\\archi\\source\\repos\\WordForge\\WordForge\\WordForge\\WordForge.csproj",
       "projectName": "WordForge",
-      "projectPath": "C:\\Users\\archi\\source\\repos\\WordForge\\WordForge\\WordForge.csproj",
+      "projectPath": "C:\\Users\\archi\\source\\repos\\WordForge\\WordForge\\WordForge\\WordForge.csproj",
       "packagesPath": "C:\\Users\\archi\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\archi\\source\\repos\\WordForge\\WordForge\\obj\\",
+      "outputPath": "C:\\Users\\archi\\source\\repos\\WordForge\\WordForge\\WordForge\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
