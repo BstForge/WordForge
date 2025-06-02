@@ -7,7 +7,7 @@ namespace WordForge
 {
     public partial class MainWindow : RibbonWindow
     {
-        private readonly ProjectViewModel projectViewModel;
+        public readonly ProjectViewModel projectViewModel;
         private ProjectView ProjectView;
         private ManuscriptView manuscriptView;
 
@@ -22,7 +22,7 @@ namespace WordForge
             ShowProjectView();
         }
 
-        private void ShowProjectView()
+        public void ShowProjectView()
         {
             MainContent.Content = ProjectView;
         }

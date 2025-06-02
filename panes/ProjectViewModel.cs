@@ -106,7 +106,7 @@ namespace WordForge.Panes
                     vm.SelectedScene != null)
                 {
                     vm.SelectedScene.Content = mv.Editor.Text;
-                    MessageBox.Show("Project saved successfully.", "Save", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Saving content: " + vm.SelectedScene.Content);
                 }
 
                 CurrentProjectService.Instance.Save();
@@ -122,6 +122,9 @@ namespace WordForge.Panes
             Title = string.Empty;
             Series = string.Empty;
             Author = string.Empty;
+
+            if (Application.Current.MainWindow is WordForge.MainWindow mw)
+                mw.ShowProjectView();
         }
 
         private void OnSelectRecent(string path)
