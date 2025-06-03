@@ -8,13 +8,17 @@
              mc:Ignorable="d">
 
     <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="90" />
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"/>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <!-- Left Panel -->
-        <StackPanel Grid.Column="0" Margin="0,0,10,0">
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,0">
             <Button Content="New Project" Command="{Binding NewCommand}" Margin="0,0,0,5"/>
             <Button Content="Load Project" Command="{Binding LoadCommand}" Margin="0,0,0,15"/>
 
@@ -32,7 +36,7 @@
         </StackPanel>
 
         <!-- Right Panel -->
-        <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
+        <StackPanel Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="400">
             <TextBlock Text="Create New Project" FontSize="18" FontWeight="Bold" Margin="0,0,0,20" TextAlignment="Center"/>
 
             <TextBlock Text="Title (required):" Margin="0,0,0,5"/>
@@ -46,5 +50,7 @@
 
             <Button Content="Create" Command="{Binding CreateCommand}" Width="80" HorizontalAlignment="Center"/>
         </StackPanel>
+
+        <local:AdBanner Grid.Row="1" Grid.ColumnSpan="2" />
     </Grid>
 </UserControl>

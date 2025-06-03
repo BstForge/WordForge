@@ -34,8 +34,8 @@
         </Border>
 
         <!-- Editor -->
-        <Border Grid.Column="1" Padding="10" CornerRadius="6" Background="White">
-            <avalonEdit:TextEditor Name="Editor"
+        <Border Grid.Row="0" Grid.Column="1" Padding="10" CornerRadius="6" Background="White">
+                <avalonEdit:TextEditor Name="Editor"
                                    FontFamily="Consolas"
                                    FontSize="14"
                                    ShowLineNumbers="False"
@@ -43,6 +43,8 @@
         </Border>
 
         <!-- Right Pane -->
-        <Border Grid.Column="2" Background="#F5F5F5" CornerRadius="6" />
+        <Border Grid.Row="0" Grid.Column="2" Background="#F5F5F5" CornerRadius="6" />
+
+        <local:AdBanner Grid.Row="1" Grid.ColumnSpan="3" VerticalAlignment="Bottom" />
     </Grid>
 </UserControl>

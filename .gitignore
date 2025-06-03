@@ -1,0 +1,50 @@
+# Ignore build results
+bin/
+obj/
+[Bb]uild/
+[Bb]uild[Ll]og.*
+
+# Visual Studio files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider / JetBrains IDEs
+.idea/
+
+# Auto-generated files
+Generated_Code/
+*.g.cs
+*.g.i.cs
+
+# NuGet
+*.nupkg
+packages/
+*.snupkg
+*.nuspec
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Logs
+*.log
+
+# OS-specific
+Thumbs.db
+.DS_Store
+
+# User-specific files
+*.userprefs
+
+# Others
+_ReSharper*/
+*.bak
+*.tmp
+
+# Publish output
+publish/
+
+# Environment-specific settings
+.env
