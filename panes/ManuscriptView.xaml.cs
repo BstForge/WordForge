@@ -50,7 +50,21 @@ namespace WordForge.Panes
                 ExpandAll(tree);
             }
         }
-
+        private void AdBanner_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "https://www.amazon.com/stores/Christopher-Schlosser/author/B0CPXX21G6",
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unable to open the link: " + ex.Message);
+            }
+        }
         private void ExpandAll(ItemsControl parent)
         {
             foreach (var item in parent.Items)
