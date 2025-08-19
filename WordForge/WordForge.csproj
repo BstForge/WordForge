@@ -15,4 +15,8 @@
     <Page Remove=".github\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include=".codex\PROTOCOL.md" />
+  </ItemGroup>
+
 </Project>
