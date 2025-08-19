@@ -17,28 +17,28 @@
                 <ColumnDefinition Width="120"/>
                 <!-- Outline -->
                 <ColumnDefinition Width="18"/>
-                <ColumnDefinition Width="210"/>
+                <ColumnDefinition Width="330"/>
                 <!-- Bibles group -->
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <!-- Hamburger -->
-            <Border Grid.Column="0" Background="#FF232529" BorderBrush="#FF3B3F45" BorderThickness="1" CornerRadius="4">
-                <Button x:Name="HamburgerButton" Background="Transparent" BorderThickness="0" ToolTip="Menu" Cursor="Hand">
-                    <StackPanel VerticalAlignment="Center" Margin="8,6">
-                        <Rectangle Height="3" Fill="#FFE5E7EB" Margin="0,2"/>
-                        <Rectangle Height="3" Fill="#FFE5E7EB" Margin="0,2"/>
-                        <Rectangle Height="3" Fill="#FFE5E7EB" Margin="0,2"/>
-                    </StackPanel>
-                </Button>
-            </Border>
+            <Button x:Name="HamburgerButton" Grid.Column="0" Background="Transparent" BorderBrush="#FF3B3F45" BorderThickness="1" CornerRadius="4" ToolTip="Menu" Cursor="Hand">
+                <StackPanel VerticalAlignment="Center" Margin="8,6">
+                    <Rectangle Height="3" Fill="#FFE5E7EB" Margin="0,2"/>
+                    <Rectangle Height="3" Fill="#FFE5E7EB" Margin="0,2"/>
+                    <Rectangle Height="3" Fill="#FFE5E7EB" Margin="0,2"/>
+                </StackPanel>
+            </Button>
 
             <Popup x:Name="HamburgerPopup" PlacementTarget="{Binding ElementName=HamburgerButton}" StaysOpen="False">
                 <menus:FileMenu />
             </Popup>
 
             <!-- Right Pane label -->
-            <TextBlock Grid.Column="2" Text="Right Pane" Foreground="#FFE5E7EB" FontWeight="Bold" VerticalAlignment="Center"/>
+            <Border Grid.Column="2" Padding="12,6" Background="#FF2E3136" BorderBrush="#FF3B3F45" BorderThickness="1" CornerRadius="12" VerticalAlignment="Center" HorizontalAlignment="Left">
+                <TextBlock Text="Right Pane" Foreground="#FFE5E7EB" FontWeight="SemiBold" />
+            </Border>
 
             <!-- Timeline button -->
             <Button Grid.Column="4" Height="52" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
@@ -56,8 +56,8 @@
                         <RowDefinition Height="8"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Bibles" Foreground="#FFE5E7EB" FontWeight="Bold"/>
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left">
+                    <TextBlock Text="Bibles" Foreground="#FFE5E7EB" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
                         <Button Width="90" Height="36" Margin="0,0,8,0"
                                 Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
                                 Foreground="#FF111111" FontWeight="SemiBold" Content="Character"/>
