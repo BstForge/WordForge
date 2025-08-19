@@ -1,0 +1,37 @@
+﻿name: CI • Windows WPF Build
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 9 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore
+        run: dotnet restore WordForge.sln
+
+      - name: Build (Release, treat warnings as errors)
+        run: dotnet build WordForge.sln -c Release -warnaserror
+
+      - name: Publish (smoke test Win-x64)
+        run: dotnet publish WordForge/WordForge.csproj -c Release -r win-x64
+
+      - name: Upload artifact (publish output)
+        uses: actions/upload-artifact@v4
+        with:
+          name: WordForge-win-x64
+          path: |
+            **/bin/Release/net9.0-windows/**/publish/**
