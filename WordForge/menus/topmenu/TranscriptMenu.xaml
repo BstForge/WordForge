@@ -23,14 +23,15 @@
             </Grid.ColumnDefinitions>
 
             <!-- Hamburger -->
-            <Button x:Name="HamburgerButton" Grid.Column="0" Background="#FF232529" BorderBrush="#FF3B3F45" BorderThickness="1" CornerRadius="4"
-                    ToolTip="Menu" Cursor="Hand">
-                <StackPanel VerticalAlignment="Center" Margin="8,6">
-                    <Rectangle Height="3" Fill="#FFE5E7EB" Margin="0,2"/>
-                    <Rectangle Height="3" Fill="#FFE5E7EB" Margin="0,2"/>
-                    <Rectangle Height="3" Fill="#FFE5E7EB" Margin="0,2"/>
-                </StackPanel>
-            </Button>
+            <Border Grid.Column="0" Background="#FF232529" BorderBrush="#FF3B3F45" BorderThickness="1" CornerRadius="4">
+                <Button x:Name="HamburgerButton" Background="Transparent" BorderThickness="0" ToolTip="Menu" Cursor="Hand">
+                    <StackPanel VerticalAlignment="Center" Margin="8,6">
+                        <Rectangle Height="3" Fill="#FFE5E7EB" Margin="0,2"/>
+                        <Rectangle Height="3" Fill="#FFE5E7EB" Margin="0,2"/>
+                        <Rectangle Height="3" Fill="#FFE5E7EB" Margin="0,2"/>
+                    </StackPanel>
+                </Button>
+            </Border>
 
             <Popup x:Name="HamburgerPopup" PlacementTarget="{Binding ElementName=HamburgerButton}" StaysOpen="False">
                 <menus:FileMenu />
