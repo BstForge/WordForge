@@ -9,7 +9,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="92"/>
+            <RowDefinition Height="120"/>
             <!-- Taller top bar -->
             <RowDefinition Height="*"/>
             <!-- Main area -->
@@ -23,7 +23,7 @@
         <!-- ===== MAIN AREA (left rail + center + right pane ~25%) ===== -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="64"/>
+                <ColumnDefinition Width="112"/>
                 <!-- Left vertical nav -->
                 <ColumnDefinition Width="3*"/>
                 <!-- Center editor -->
@@ -35,37 +35,37 @@
             <Border Grid.Column="0" Background="#FF232529" BorderBrush="#FF0F1012" BorderThickness="0,0,1,0">
                 <StackPanel Margin="8">
                     <!-- Buttons: Transcript, Timeline, Outline, Character Bible, Location Bible, Item Bible -->
-                    <Button Height="56" Margin="0,0,0,8" Background="#FF2A2D31" BorderBrush="#FF3B3F45" Foreground="#FFE5E7EB" Cursor="Hand">
+                    <Button Width="96" Height="56" Margin="0,0,0,8" Background="#FF2A2D31" BorderBrush="#FF3B3F45" Foreground="#FFE5E7EB" Cursor="Hand">
                         <StackPanel>
                             <Rectangle Height="20" Width="20" Fill="#FFBFC5CD" HorizontalAlignment="Center" Margin="0,4,0,2"/>
                             <TextBlock Text="TRANSCRIPT" FontWeight="Bold" FontSize="10" HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Button>
-                    <Button Height="56" Margin="0,0,0,8" Background="#FF2A2D31" BorderBrush="#FF3B3F45" Foreground="#FFE5E7EB" Cursor="Hand">
+                    <Button Width="96" Height="56" Margin="0,0,0,8" Background="#FF2A2D31" BorderBrush="#FF3B3F45" Foreground="#FFE5E7EB" Cursor="Hand">
                         <StackPanel>
                             <Rectangle Height="20" Width="20" Fill="#FFBFC5CD" HorizontalAlignment="Center" Margin="0,4,0,2"/>
                             <TextBlock Text="TIMELINE" FontWeight="Bold" FontSize="10" HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Button>
-                    <Button Height="56" Margin="0,0,0,8" Background="#FF2A2D31" BorderBrush="#FF3B3F45" Foreground="#FFE5E7EB" Cursor="Hand">
+                    <Button Width="96" Height="56" Margin="0,0,0,8" Background="#FF2A2D31" BorderBrush="#FF3B3F45" Foreground="#FFE5E7EB" Cursor="Hand">
                         <StackPanel>
                             <Rectangle Height="20" Width="20" Fill="#FFBFC5CD" HorizontalAlignment="Center" Margin="0,4,0,2"/>
                             <TextBlock Text="OUTLINE" FontWeight="Bold" FontSize="10" HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Button>
-                    <Button Height="56" Margin="0,0,0,8" Background="#FF2A2D31" BorderBrush="#FF3B3F45" Foreground="#FFE5E7EB" Cursor="Hand">
+                    <Button Width="96" Height="56" Margin="0,0,0,8" Background="#FF2A2D31" BorderBrush="#FF3B3F45" Foreground="#FFE5E7EB" Cursor="Hand">
                         <StackPanel>
                             <Rectangle Height="20" Width="20" Fill="#FFBFC5CD" HorizontalAlignment="Center" Margin="0,4,0,2"/>
                             <TextBlock Text="CHAR BIBLE" FontWeight="Bold" FontSize="10" HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Button>
-                    <Button Height="56" Margin="0,0,0,8" Background="#FF2A2D31" BorderBrush="#FF3B3F45" Foreground="#FFE5E7EB" Cursor="Hand">
+                    <Button Width="96" Height="56" Margin="0,0,0,8" Background="#FF2A2D31" BorderBrush="#FF3B3F45" Foreground="#FFE5E7EB" Cursor="Hand">
                         <StackPanel>
                             <Rectangle Height="20" Width="20" Fill="#FFBFC5CD" HorizontalAlignment="Center" Margin="0,4,0,2"/>
                             <TextBlock Text="LOC BIBLE" FontWeight="Bold" FontSize="10" HorizontalAlignment="Center"/>
                         </StackPanel>
                     </Button>
-                    <Button Height="56" Background="#FF2A2D31" BorderBrush="#FF3B3F45" Foreground="#FFE5E7EB" Cursor="Hand">
+                    <Button Width="96" Height="56" Background="#FF2A2D31" BorderBrush="#FF3B3F45" Foreground="#FFE5E7EB" Cursor="Hand">
                         <StackPanel>
                             <Rectangle Height="20" Width="20" Fill="#FFBFC5CD" HorizontalAlignment="Center" Margin="0,4,0,2"/>
                             <TextBlock Text="ITEM BIBLE" FontWeight="Bold" FontSize="10" HorizontalAlignment="Center"/>
@@ -75,7 +75,7 @@
             </Border>
 
             <!-- Center editor surface -->
-            <Grid Grid.Column="1" Background="#FF1A1B1E" Margin="12,8,12,8">
+            <Grid Grid.Column="1" Background="#FF1A1B1E" Margin="12,0,12,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="28"/>
                     <!-- Section title -->
@@ -101,7 +101,7 @@
             </Grid>
 
             <!-- Right pane (~25%) -->
-            <Border Grid.Column="2" Margin="0,8,12,8" Background="#FF232529"
+            <Border Grid.Column="2" Margin="0,0,12,0" Background="#FF232529"
                     BorderBrush="#FF3B3F45" BorderThickness="1" CornerRadius="6">
                 <Grid>
                     <TextBlock Text="RIGHT PANE" Foreground="#FFE5E7EB" FontWeight="Bold"
