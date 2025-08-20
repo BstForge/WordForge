@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System;
 
 namespace WordForge;
 
@@ -43,6 +44,10 @@ public class Scene : INotifyPropertyChanged
 public class Chapter : INotifyPropertyChanged
 {
     private string _title = "Chapter";
+
+    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public DateTime CreatedUtc { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedUtc { get; set; } = DateTime.UtcNow;
 
     public string Title
     {
