@@ -63,10 +63,7 @@
             <!-- Right pane (~25%) -->
             <Border Grid.Column="2" Margin="0,0,12,0" Background="#FF232529"
                     BorderBrush="#FF3B3F45" BorderThickness="1" CornerRadius="6">
-                <Grid>
-                    <TextBlock Text="RIGHT PANE" Foreground="#FFE5E7EB" FontWeight="Bold"
-                               Margin="10" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                </Grid>
+                <ContentControl x:Name="RightPaneContent"/>
             </Border>
         </Grid>
 

@@ -20,7 +20,9 @@ namespace WordForge
         public MainWindow()
         {
             InitializeComponent();
+            RightPaneService.Host = RightPaneContent;
             TopMenuContent.Content = new TranscriptMenu();
+            RightPaneService.Show(RightPaneKind.Timeline);
         }
     }
 }

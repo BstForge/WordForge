@@ -37,11 +37,11 @@
             </Border>
 
             <!-- Timeline button -->
-            <Button Grid.Column="4" Height="52" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
+            <Button x:Name="TimelineButton" Grid.Column="4" Height="52" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
                     Foreground="#FF111111" FontWeight="Bold" Cursor="Hand" Content="Timeline"/>
 
             <!-- Outline button -->
-            <Button Grid.Column="6" Height="52" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
+            <Button x:Name="OutlineButton" Grid.Column="6" Height="52" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
                     Foreground="#FF111111" FontWeight="Bold" Cursor="Hand" Content="Outline"/>
 
             <!-- Bibles group -->
@@ -54,13 +54,13 @@
                     </Grid.RowDefinitions>
                     <TextBlock Text="Bibles" Foreground="#FFE5E7EB" FontWeight="Bold" HorizontalAlignment="Center"/>
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Width="90" Height="36" Margin="0,0,8,0"
+                        <Button x:Name="CharacterButton" Width="90" Height="36" Margin="0,0,8,0"
                                 Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
                                 Foreground="#FF111111" FontWeight="SemiBold" Content="Character"/>
-                        <Button Width="90" Height="36" Margin="0,0,8,0"
+                        <Button x:Name="LocationButton" Width="90" Height="36" Margin="0,0,8,0"
                                 Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
                                 Foreground="#FF111111" FontWeight="SemiBold" Content="Location"/>
-                        <Button Width="90" Height="36"
+                        <Button x:Name="ItemButton" Width="90" Height="36"
                                 Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
                                 Foreground="#FF111111" FontWeight="SemiBold" Content="Item"/>
                     </StackPanel>

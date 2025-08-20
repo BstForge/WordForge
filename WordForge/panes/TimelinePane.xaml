@@ -1,0 +1,8 @@
+<UserControl x:Class="WordForge.Panes.TimelinePane"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <TextBlock Text="Timeline Pane" Foreground="#FFE5E7EB" FontWeight="Bold" 
+                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </Grid>
+</UserControl>
