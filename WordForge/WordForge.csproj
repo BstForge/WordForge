@@ -9,14 +9,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove=".codex\**" />
     <Compile Remove=".github\**" />
+    <EmbeddedResource Remove=".codex\**" />
     <EmbeddedResource Remove=".github\**" />
+    <None Remove=".codex\**" />
     <None Remove=".github\**" />
+    <Page Remove=".codex\**" />
     <Page Remove=".github\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include=".codex\PROTOCOL.md" />
+    <None Remove="resources\images\hamburger.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="resources\images\hamburger.png" />
   </ItemGroup>
 
 </Project>
