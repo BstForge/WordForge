@@ -11,6 +11,31 @@ public partial class FileMenu : UserControl
         InitializeComponent();
     }
 
+    private void New_Click(object sender, RoutedEventArgs e)
+    {
+        var window = new NewProjectWindow { Owner = Application.Current.MainWindow };
+        if (window.ShowDialog() == true)
+        {
+            var project = new Project
+            {
+                Title = window.ProjectTitle,
+                Author = window.ProjectAuthor,
+                Genre = window.ProjectGenre
+            };
+            ProjectService.CreateNew(project);
+        }
+    }
+
+    private void Save_Click(object sender, RoutedEventArgs e)
+    {
+        ProjectService.Save();
+    }
+
+    private void Load_Click(object sender, RoutedEventArgs e)
+    {
+        ProjectService.Load();
+    }
+
     private void Properties_Click(object sender, RoutedEventArgs e)
     {
         var window = new PropertiesWindow { Owner = Application.Current.MainWindow };

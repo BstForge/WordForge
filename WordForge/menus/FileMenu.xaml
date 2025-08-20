@@ -3,12 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Border Background="#FF232529" BorderBrush="#FF3B3F45" BorderThickness="1" CornerRadius="4" Padding="10">
         <StackPanel>
-            <Button Content="New" Margin="0,0,0,4" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" />
-            <!-- TODO: Wire up New -->
-            <Button Content="Save" Margin="0,0,0,4" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" />
-            <!-- TODO: Wire up Save -->
-            <Button Content="Load" Margin="0,0,0,4" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" />
-            <!-- TODO: Wire up Load -->
+            <Button Content="New" Margin="0,0,0,4" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" Click="New_Click" />
+            <Button Content="Save" Margin="0,0,0,4" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" Click="Save_Click" />
+            <Button Content="Load" Margin="0,0,0,4" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" Click="Load_Click" />
             <Button Content="Properties" Margin="0,0,0,4" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" Click="Properties_Click"/>
             <Button Content="Print" Margin="0,0,0,4" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" />
             <!-- TODO: Wire up Print -->
