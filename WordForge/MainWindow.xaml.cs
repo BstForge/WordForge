@@ -8,6 +8,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WordForge.Menus.TopMenu;
 
 namespace WordForge
 {
@@ -19,6 +20,7 @@ namespace WordForge
         public MainWindow()
         {
             InitializeComponent();
+            TopMenuContent.Content = new TranscriptMenu();
         }
     }
 }
