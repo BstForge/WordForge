@@ -22,6 +22,7 @@ public record Project
 
 public static class ProjectService
 {
+    public static event Action? BeforeSave;
     public static Project CurrentProject { get; private set; } = new Project
     {
         Title = "New Project",
@@ -49,6 +50,8 @@ public static class ProjectService
         if (CurrentProject == null)
             return;
 
+        BeforeSave?.Invoke();
+
         if (CurrentPath == null)
         {
             var dialog = new SaveFileDialog
@@ -73,6 +76,8 @@ public static class ProjectService
     {
         if (CurrentProject == null)
             return;
+
+        BeforeSave?.Invoke();
 
         var dialog = new SaveFileDialog
         {
@@ -143,6 +148,9 @@ public static class ProjectService
 
     public static void SaveProject(Project project, string path)
     {
+        if (project == CurrentProject)
+            BeforeSave?.Invoke();
+
         if (!path.EndsWith(".forge", StringComparison.OrdinalIgnoreCase))
             path += ".forge";
         SaveToPath(project, path);
