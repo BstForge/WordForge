@@ -50,6 +50,23 @@
                     <ToggleButton x:Name="TransitionsToggle" Style="{StaticResource ToggleSwitchStyle}" Width="50" Height="24"/>
                     <TextBlock x:Name="ToggleStateText" Foreground="#FFE5E7EB" VerticalAlignment="Center" Margin="8,0,0,0"/>
                 </StackPanel>
+                <StackPanel Margin="0,0,0,10">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,4">
+                        <TextBlock Text="Autosave:" Foreground="#FFE5E7EB" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <ToggleButton x:Name="AutosaveToggle" Style="{StaticResource ToggleSwitchStyle}" Width="50" Height="24" ToolTip="Enable automatic saving"/>
+                        <TextBlock x:Name="AutosaveStateText" Foreground="#FFE5E7EB" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                        <ComboBox x:Name="AutosaveModeBox" Width="140" ToolTip="Choose when autosave occurs">
+                            <ComboBoxItem>Every N minutes</ComboBoxItem>
+                            <ComboBoxItem>On pane change</ComboBoxItem>
+                        </ComboBox>
+                        <StackPanel Orientation="Horizontal" Margin="8,0,0,0" x:Name="AutosaveMinutesPanel">
+                            <TextBlock Text="Minutes:" Foreground="#FFE5E7EB" VerticalAlignment="Center"/>
+                            <TextBox x:Name="AutosaveMinutesBox" Width="40" Margin="4,0,0,0" ToolTip="Interval in minutes"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button Width="100" Content="Save Changes" Click="Save_Click"/>
                 </StackPanel>
