@@ -24,7 +24,7 @@
 
             <!-- Hamburger -->
             <Button x:Name="HamburgerButton" Grid.Column="0" Background="Transparent" BorderBrush="#FF3B3F45" BorderThickness="1" ToolTip="Menu" Cursor="Hand">
-                <Image Source="resources/images/hamburger.png" Width="24" Height="24" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <Image Source="/resources/images/hamburger.png" Width="50" Height="50" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Button>
 
             <Popup x:Name="HamburgerPopup" PlacementTarget="{Binding ElementName=HamburgerButton}" StaysOpen="False">
