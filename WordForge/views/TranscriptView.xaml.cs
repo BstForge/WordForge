@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using WordForge;
 
 namespace WordForge.Views;
@@ -84,26 +85,49 @@ public partial class TranscriptView : UserControl
 
     private void RenameChapter_Click(object sender, RoutedEventArgs e)
     {
-        if ((sender as Button)?.Tag is Chapter chapter)
+        if ((sender as FrameworkElement)?.Tag is Chapter chapter)
         {
-            var input = Microsoft.VisualBasic.Interaction.InputBox("Rename chapter", "Rename", chapter.Title);
-            if (!string.IsNullOrWhiteSpace(input))
+            var item = ChapterTree.ItemContainerGenerator.ContainerFromItem(chapter) as TreeViewItem;
+            if (item == null) return;
+            var textBox = FindVisualChild<TextBox>(item, "ChapterEditBox");
+            var textBlock = FindVisualChild<TextBlock>(item, "ChapterText");
+            if (textBox != null && textBlock != null)
             {
-                chapter.Title = input;
-                ProjectService.CurrentProject.IsDirty = true;
+                textBox.Text = chapter.Title;
+                textBox.Tag = textBlock;
+                textBlock.Visibility = Visibility.Collapsed;
+                textBox.Visibility = Visibility.Visible;
+                textBox.Focus();
+                textBox.SelectAll();
             }
         }
     }
 
     private void RenameScene_Click(object sender, RoutedEventArgs e)
     {
-        if ((sender as Button)?.Tag is Scene scene)
+        if ((sender as FrameworkElement)?.Tag is Scene scene)
         {
-            var input = Microsoft.VisualBasic.Interaction.InputBox("Rename scene", "Rename", scene.Title);
-            if (!string.IsNullOrWhiteSpace(input))
+            foreach (var ch in ProjectService.CurrentProject.Chapters)
             {
-                scene.Title = input;
-                ProjectService.CurrentProject.IsDirty = true;
+                if (ch.Scenes.Contains(scene))
+                {
+                    var chapterItem = ChapterTree.ItemContainerGenerator.ContainerFromItem(ch) as TreeViewItem;
+                    chapterItem?.UpdateLayout();
+                    var sceneItem = chapterItem?.ItemContainerGenerator.ContainerFromItem(scene) as TreeViewItem;
+                    if (sceneItem == null) return;
+                    var textBox = FindVisualChild<TextBox>(sceneItem, "SceneEditBox");
+                    var textBlock = FindVisualChild<TextBlock>(sceneItem, "SceneText");
+                    if (textBox != null && textBlock != null)
+                    {
+                        textBox.Text = scene.Title;
+                        textBox.Tag = textBlock;
+                        textBlock.Visibility = Visibility.Collapsed;
+                        textBox.Visibility = Visibility.Visible;
+                        textBox.Focus();
+                        textBox.SelectAll();
+                    }
+                    break;
+                }
             }
         }
     }
@@ -192,22 +216,100 @@ public partial class TranscriptView : UserControl
         UpdateCounts();
     }
 
-    private void OpenChapterMenu(object sender, RoutedEventArgs e)
+    private void OpenItemMenu(object sender, RoutedEventArgs e)
     {
-        if (sender is Button btn && btn.ContextMenu != null)
+        if (sender is Button btn)
         {
-            btn.ContextMenu.PlacementTarget = btn;
-            btn.ContextMenu.IsOpen = true;
+            var item = FindParent<TreeViewItem>(btn);
+            if (item?.ContextMenu != null)
+            {
+                item.ContextMenu.PlacementTarget = btn;
+                item.ContextMenu.IsOpen = true;
+            }
         }
     }
 
-    private void OpenSceneMenu(object sender, RoutedEventArgs e)
+    private void ChapterTree_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
     {
-        if (sender is Button btn && btn.ContextMenu != null)
+        var item = FindParent<TreeViewItem>(e.OriginalSource as DependencyObject);
+        if (item != null)
         {
-            btn.ContextMenu.PlacementTarget = btn;
-            btn.ContextMenu.IsOpen = true;
+            e.Handled = true;
+            if (item.ContextMenu != null)
+            {
+                item.ContextMenu.PlacementTarget = item;
+                item.ContextMenu.IsOpen = true;
+            }
         }
+    }
+
+    private void RenameBox_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (sender is TextBox tb)
+        {
+            if (e.Key == Key.Enter)
+            {
+                FinishRename(tb, true);
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Escape)
+            {
+                FinishRename(tb, false);
+                e.Handled = true;
+            }
+        }
+    }
+
+    private void RenameBox_LostFocus(object sender, RoutedEventArgs e)
+    {
+        if (sender is TextBox tb && tb.Visibility == Visibility.Visible)
+        {
+            FinishRename(tb, true);
+        }
+    }
+
+    private void FinishRename(TextBox tb, bool commit)
+    {
+        var textBlock = tb.Tag as TextBlock;
+        if (textBlock != null)
+            textBlock.Visibility = Visibility.Visible;
+        tb.Visibility = Visibility.Collapsed;
+
+        if (commit)
+        {
+            if (tb.DataContext is Chapter ch)
+            {
+                ch.Title = tb.Text;
+            }
+            else if (tb.DataContext is Scene sc)
+            {
+                sc.Title = tb.Text;
+            }
+            ProjectService.CurrentProject.IsDirty = true;
+        }
+    }
+
+    private static T? FindParent<T>(DependencyObject? current) where T : DependencyObject
+    {
+        while (current != null && current is not T)
+        {
+            current = VisualTreeHelper.GetParent(current);
+        }
+        return current as T;
+    }
+
+    private static T? FindVisualChild<T>(DependencyObject parent, string name) where T : FrameworkElement
+    {
+        for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+        {
+            var child = VisualTreeHelper.GetChild(parent, i);
+            if (child is T fe && fe.Name == name)
+                return fe;
+            var result = FindVisualChild<T>(child, name);
+            if (result != null)
+                return result;
+        }
+        return null;
     }
 
     private void Editor_TextChanged(object sender, TextChangedEventArgs e)
