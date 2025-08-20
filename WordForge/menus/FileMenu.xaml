@@ -9,8 +9,7 @@
             <!-- TODO: Wire up Save -->
             <Button Content="Load" Margin="0,0,0,4" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" />
             <!-- TODO: Wire up Load -->
-            <Button Content="Properties" Margin="0,0,0,4" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" />
-            <!-- TODO: Wire up Properties -->
+            <Button Content="Properties" Margin="0,0,0,4" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" Click="Properties_Click"/>
             <Button Content="Print" Margin="0,0,0,4" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" />
             <!-- TODO: Wire up Print -->
             <Button Content="Exit" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" Click="Exit_Click" />

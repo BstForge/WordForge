@@ -1,4 +1,5 @@
 using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using WordForge.Panes;
@@ -17,6 +18,7 @@ public enum RightPaneKind
 public static class RightPaneService
 {
     public static ContentControl? Host { get; set; }
+    public static FrameworkElement? Container { get; set; }
 
     public static RightPaneKind CurrentPane { get; private set; } = RightPaneKind.Timeline;
 
@@ -24,20 +26,32 @@ public static class RightPaneService
 
     public static void Show(RightPaneKind kind)
     {
-        if (Host != null)
+        void Update()
         {
-            Host.Content = kind switch
+            if (Host != null)
             {
-                RightPaneKind.Timeline => new TimelinePane(),
-                RightPaneKind.Outline => new OutlinePane(),
-                RightPaneKind.Character => new CharacterBiblePane(),
-                RightPaneKind.Location => new LocationBiblePane(),
-                RightPaneKind.Item => new ItemBiblePane(),
-                _ => new TimelinePane()
-            };
+                Host.Content = kind switch
+                {
+                    RightPaneKind.Timeline => new TimelinePane(),
+                    RightPaneKind.Outline => new OutlinePane(),
+                    RightPaneKind.Character => new CharacterBiblePane(),
+                    RightPaneKind.Location => new LocationBiblePane(),
+                    RightPaneKind.Item => new ItemBiblePane(),
+                    _ => new TimelinePane()
+                };
+            }
+            CurrentPane = kind;
+            PaneChanged?.Invoke(kind);
         }
-        CurrentPane = kind;
-        PaneChanged?.Invoke(kind);
+
+        if (Container != null && Container.RenderSize.Width > 0)
+        {
+            TransitionService.SlideHorizontal(Container, Container.RenderSize.Width, Update);
+        }
+        else
+        {
+            Update();
+        }
     }
 
     public static void BindButton(Button button, RightPaneKind kind)

@@ -18,7 +18,9 @@
         </Grid.RowDefinitions>
 
         <!-- ===== TOP BAR ===== -->
-        <ContentControl x:Name="TopMenuContent" Grid.Row="0"/>
+        <Grid x:Name="TopMenuHost" Grid.Row="0" ClipToBounds="True">
+            <ContentControl x:Name="TopMenuContent"/>
+        </Grid>
 
         <!-- ===== MAIN AREA (left rail + center + right pane ~25%) ===== -->
         <Grid Grid.Row="1">
@@ -35,7 +37,7 @@
             <menus:LeftMenu Grid.Column="0"/>
 
             <!-- Center editor surface -->
-            <Grid Grid.Column="1" Background="#FF1A1B1E" Margin="12,0,12,0">
+            <Grid x:Name="CenterHost" Grid.Column="1" Background="#FF1A1B1E" Margin="12,0,12,0" ClipToBounds="True">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="28"/>
                     <!-- Section title -->
@@ -61,8 +63,8 @@
             </Grid>
 
             <!-- Right pane (~25%) -->
-            <Border Grid.Column="2" Margin="0,0,12,0" Background="#FF232529"
-                    BorderBrush="#FF3B3F45" BorderThickness="1" CornerRadius="6">
+            <Border x:Name="RightPaneHost" Grid.Column="2" Margin="0,0,12,0" Background="#FF232529"
+                    BorderBrush="#FF3B3F45" BorderThickness="1" CornerRadius="6" ClipToBounds="True">
                 <ContentControl x:Name="RightPaneContent"/>
             </Border>
         </Grid>
