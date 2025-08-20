@@ -77,7 +77,7 @@ public partial class TranscriptView : UserControl
         // Select the new scene
         _selectedScene = scene;
         _selectedChapter = null;
-        ChapterTree.SelectedItem = scene;
+        SelectItem(scene);
         Editor.Text = scene.Text;
         UpdateCounts();
     }
@@ -123,14 +123,14 @@ public partial class TranscriptView : UserControl
             {
                 var newIndex = Math.Min(index, list.Count - 1);
                 var newChapter = list[newIndex];
-                ChapterTree.SelectedItem = newChapter;
+                SelectItem(newChapter);
                 _selectedChapter = newChapter;
                 _selectedScene = null;
                 Editor.Text = string.Join("\n***\n", newChapter.Scenes.Select(s => s.Text));
             }
             else
             {
-                ChapterTree.SelectedItem = null;
+                ClearSelection();
                 _selectedChapter = null;
                 _selectedScene = null;
                 Editor.Text = string.Empty;
@@ -158,14 +158,14 @@ public partial class TranscriptView : UserControl
                     {
                         var newIndex = Math.Min(index, list.Count - 1);
                         var newScene = list[newIndex];
-                        ChapterTree.SelectedItem = newScene;
+                        SelectItem(newScene);
                         _selectedScene = newScene;
                         _selectedChapter = null;
                         Editor.Text = newScene.Text;
                     }
                     else
                     {
-                        ChapterTree.SelectedItem = chapter;
+                        SelectItem(chapter);
                         _selectedScene = null;
                         _selectedChapter = chapter;
                         Editor.Text = string.Join("\n***\n", chapter.Scenes.Select(s => s.Text));
@@ -286,6 +286,7 @@ public partial class TranscriptView : UserControl
                     {
                         list.Move(oldIndex, newIndex);
                         ProjectService.CurrentProject.IsDirty = true;
+                        SelectItem(chapter);
                     }
                 }
             }
@@ -306,6 +307,7 @@ public partial class TranscriptView : UserControl
                             {
                                 ch.Scenes.Move(oldIndex, newIndex);
                                 ProjectService.CurrentProject.IsDirty = true;
+                                SelectItem(scene);
                             }
                             return;
                         }
@@ -320,9 +322,88 @@ public partial class TranscriptView : UserControl
                             ch.Scenes.Remove(scene);
                             targetChapter.Scenes.Add(scene);
                             ProjectService.CurrentProject.IsDirty = true;
+                            SelectItem(scene);
                             return;
                         }
                     }
+                }
+            }
+        }
+    }
+
+    private void SelectItem(object? item)
+    {
+        if (item == null)
+        {
+            ClearSelection();
+            return;
+        }
+
+        ChapterTree.UpdateLayout();
+
+        if (item is Chapter chapter)
+        {
+            var chapterItem = ChapterTree.ItemContainerGenerator.ContainerFromItem(chapter) as TreeViewItem;
+            if (chapterItem != null)
+            {
+                chapterItem.IsSelected = true;
+                chapterItem.BringIntoView();
+                chapterItem.Focus();
+            }
+        }
+        else if (item is Scene scene)
+        {
+            foreach (var ch in ProjectService.CurrentProject.Chapters)
+            {
+                if (ch.Scenes.Contains(scene))
+                {
+                    var chapterItem = ChapterTree.ItemContainerGenerator.ContainerFromItem(ch) as TreeViewItem;
+                    if (chapterItem != null)
+                    {
+                        chapterItem.IsExpanded = true;
+                        chapterItem.UpdateLayout();
+                        var sceneItem = chapterItem.ItemContainerGenerator.ContainerFromItem(scene) as TreeViewItem;
+                        if (sceneItem != null)
+                        {
+                            sceneItem.IsSelected = true;
+                            sceneItem.BringIntoView();
+                            sceneItem.Focus();
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    private void ClearSelection()
+    {
+        ChapterTree.UpdateLayout();
+        if (ChapterTree.SelectedItem is Chapter chapter)
+        {
+            var chapterItem = ChapterTree.ItemContainerGenerator.ContainerFromItem(chapter) as TreeViewItem;
+            if (chapterItem != null)
+            {
+                chapterItem.IsSelected = false;
+            }
+        }
+        else if (ChapterTree.SelectedItem is Scene scene)
+        {
+            foreach (var ch in ProjectService.CurrentProject.Chapters)
+            {
+                if (ch.Scenes.Contains(scene))
+                {
+                    var chapterItem = ChapterTree.ItemContainerGenerator.ContainerFromItem(ch) as TreeViewItem;
+                    if (chapterItem != null)
+                    {
+                        chapterItem.UpdateLayout();
+                        var sceneItem = chapterItem.ItemContainerGenerator.ContainerFromItem(scene) as TreeViewItem;
+                        if (sceneItem != null)
+                        {
+                            sceneItem.IsSelected = false;
+                        }
+                    }
+                    break;
                 }
             }
         }
