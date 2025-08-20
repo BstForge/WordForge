@@ -1,0 +1,25 @@
+<UserControl x:Class="WordForge.Views.TranscriptView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="28"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="26"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="TRANSCRIPT" Foreground="#FFE5E7EB" FontWeight="Bold" Margin="8,0,0,0"/>
+
+        <Border Grid.Row="1" Background="#FF26282C" BorderBrush="#FF3B3F45" BorderThickness="1" CornerRadius="4">
+            <TextBox AcceptsReturn="True" AcceptsTab="True" TextWrapping="Wrap"
+                     Background="#FF26282C" Foreground="#FFE5E7EB" BorderThickness="0"
+                     VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                     FontSize="14" Padding="10"/>
+        </Border>
+
+        <DockPanel Grid.Row="2" LastChildFill="True" Background="#FF1A1B1E" Margin="2,4,2,0">
+            <TextBlock DockPanel.Dock="Left" Text="Words: 0" Foreground="#FFC9CDD3" Margin="6,0"/>
+            <TextBlock DockPanel.Dock="Right" Text="Characters: 0" Foreground="#FFC9CDD3" Margin="6,0"/>
+        </DockPanel>
+    </Grid>
+</UserControl>
