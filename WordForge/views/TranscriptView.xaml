@@ -22,66 +22,137 @@
                     <!-- Toggle collapse/expand -->
                     <Button x:Name="CollapseButton" Content="&lt;" Width="20" Height="20" Margin="2" HorizontalAlignment="Right" Click="CollapseButton_Click"/>
                 </DockPanel>
-                <TreeView Grid.Row="1" x:Name="ChapterTree" ItemsSource="{Binding Chapters}" SelectedItemChanged="ChapterTree_SelectedItemChanged" AllowDrop="True" PreviewMouseMove="ChapterTree_PreviewMouseMove" DragOver="ChapterTree_DragOver" Drop="ChapterTree_Drop">
+                <TreeView Grid.Row="1" x:Name="ChapterTree" ItemsSource="{Binding Chapters}" SelectedItemChanged="ChapterTree_SelectedItemChanged" AllowDrop="True" PreviewMouseMove="ChapterTree_PreviewMouseMove" DragOver="ChapterTree_DragOver" Drop="ChapterTree_Drop" ScrollViewer.HorizontalScrollBarVisibility="Disabled" PreviewMouseRightButtonDown="ChapterTree_PreviewMouseRightButtonDown">
                     <TreeView.Resources>
-                        <!-- Chapter template with hover menu button -->
-                        <HierarchicalDataTemplate DataType="{x:Type local:Chapter}" ItemsSource="{Binding Scenes}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Title}" Width="120"/>
-                                <Button x:Name="ChapterMenuButton" Grid.Column="1" Content="⋮" Width="20" Height="20" Margin="2" Tag="{Binding}" Click="OpenChapterMenu" Visibility="Collapsed">
-                                    <Button.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Add Scene" Tag="{Binding}" Click="AddScene_Click"/>
-                                            <MenuItem Header="Rename" Tag="{Binding}" Click="RenameChapter_Click"/>
-                                            <MenuItem Header="Delete" Tag="{Binding}" Click="DeleteChapter_Click"/>
-                                        </ContextMenu>
-                                    </Button.ContextMenu>
-                                    <Button.Style>
-                                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
-                            </Grid>
+                        <ContextMenu x:Key="ChapterContextMenu" x:Shared="False" Background="#FF26282C" BorderBrush="#FF3B3F45" Foreground="#FFE5E7EB">
+                            <ContextMenu.Resources>
+                                <Style TargetType="MenuItem">
+                                    <Setter Property="Background" Value="#FF26282C"/>
+                                    <Setter Property="Foreground" Value="#FFE5E7EB"/>
+                                    <Setter Property="BorderBrush" Value="#FF3B3F45"/>
+                                    <Setter Property="Padding" Value="6,2"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsHighlighted" Value="True">
+                                            <Setter Property="Background" Value="#FF2F3237"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ContextMenu.Resources>
+                            <MenuItem Header="Add Scene" Tag="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Click="AddScene_Click"/>
+                            <MenuItem Header="Rename" Tag="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Click="RenameChapter_Click"/>
+                            <MenuItem Header="Delete" Tag="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Click="DeleteChapter_Click"/>
+                        </ContextMenu>
+                        <ContextMenu x:Key="SceneContextMenu" x:Shared="False" Background="#FF26282C" BorderBrush="#FF3B3F45" Foreground="#FFE5E7EB">
+                            <ContextMenu.Resources>
+                                <Style TargetType="MenuItem">
+                                    <Setter Property="Background" Value="#FF26282C"/>
+                                    <Setter Property="Foreground" Value="#FFE5E7EB"/>
+                                    <Setter Property="BorderBrush" Value="#FF3B3F45"/>
+                                    <Setter Property="Padding" Value="6,2"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsHighlighted" Value="True">
+                                            <Setter Property="Background" Value="#FF2F3237"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ContextMenu.Resources>
+                            <MenuItem Header="Rename" Tag="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Click="RenameScene_Click"/>
+                            <MenuItem Header="Delete" Tag="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Click="DeleteScene_Click"/>
+                        </ContextMenu>
+                        <Style x:Key="ChapterItemStyle" TargetType="TreeViewItem">
+                            <Setter Property="ContextMenu" Value="{StaticResource ChapterContextMenu}"/>
+                            <Setter Property="Padding" Value="0"/>
+                        </Style>
+                        <Style x:Key="SceneItemStyle" TargetType="TreeViewItem">
+                            <Setter Property="ContextMenu" Value="{StaticResource SceneContextMenu}"/>
+                            <Setter Property="Padding" Value="0"/>
+                        </Style>
+                        <!-- Chapter template with overflow button -->
+                        <HierarchicalDataTemplate DataType="{x:Type local:Chapter}" ItemsSource="{Binding Scenes}" ItemContainerStyle="{StaticResource SceneItemStyle}">
+                            <Border x:Name="ChapterBorder" Padding="4,2" BorderThickness="0,0,0,1" BorderBrush="#FF3B3F45">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock x:Name="ChapterText" Grid.Column="0" Text="{Binding Title}" Foreground="#FFE5E7EB" TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}" VerticalAlignment="Center"/>
+                                    <TextBox x:Name="ChapterEditBox" Grid.Column="0" Text="{Binding Title, UpdateSourceTrigger=Explicit}" Visibility="Collapsed" Background="#FF26282C" Foreground="#FFE5E7EB" BorderBrush="#FF3B3F45" BorderThickness="1" KeyDown="RenameBox_KeyDown" LostFocus="RenameBox_LostFocus"/>
+                                    <Button x:Name="ChapterMenuButton" Grid.Column="1" Content="⋮" Width="20" Height="20" Margin="0" Click="OpenItemMenu" Visibility="Hidden" Focusable="True">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </Grid>
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
+                                                <Setter Property="Background" Value="#FF2F3237"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
+                                                <Setter Property="Background" Value="#FF34363B"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                            </Border>
                         </HierarchicalDataTemplate>
-                        <!-- Scene template with hover menu button -->
+                        <!-- Scene template with overflow button -->
                         <DataTemplate DataType="{x:Type local:Scene}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Title}" Width="140"/>
-                                <Button x:Name="SceneMenuButton" Grid.Column="1" Content="⋮" Width="20" Height="20" Margin="2" Tag="{Binding}" Click="OpenSceneMenu" Visibility="Collapsed">
-                                    <Button.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="Rename" Tag="{Binding}" Click="RenameScene_Click"/>
-                                            <MenuItem Header="Delete" Tag="{Binding}" Click="DeleteScene_Click"/>
-                                        </ContextMenu>
-                                    </Button.ContextMenu>
-                                    <Button.Style>
-                                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                </Button>
-                            </Grid>
+                            <Border x:Name="SceneBorder" Padding="4,2" BorderThickness="0,0,0,1" BorderBrush="#FF3B3F45">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock x:Name="SceneText" Grid.Column="0" Text="{Binding Title}" Foreground="#FFE5E7EB" TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}" VerticalAlignment="Center"/>
+                                    <TextBox x:Name="SceneEditBox" Grid.Column="0" Text="{Binding Title, UpdateSourceTrigger=Explicit}" Visibility="Collapsed" Background="#FF26282C" Foreground="#FFE5E7EB" BorderBrush="#FF3B3F45" BorderThickness="1" KeyDown="RenameBox_KeyDown" LostFocus="RenameBox_LostFocus"/>
+                                    <Button x:Name="SceneMenuButton" Grid.Column="1" Content="⋮" Width="20" Height="20" Margin="0" Click="OpenItemMenu" Visibility="Hidden" Focusable="True">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Visibility" Value="Hidden"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </Grid>
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
+                                                <Setter Property="Background" Value="#FF2F3237"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
+                                                <Setter Property="Background" Value="#FF34363B"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                            </Border>
                         </DataTemplate>
                     </TreeView.Resources>
+                    <TreeView.ItemContainerStyle>
+                        <StaticResource ResourceKey="ChapterItemStyle"/>
+                    </TreeView.ItemContainerStyle>
                 </TreeView>
                 <Button x:Name="AddChapterButton" Grid.Row="2" Content="Add Chapter" Margin="4" Click="AddChapter_Click"/>
             </Grid>
