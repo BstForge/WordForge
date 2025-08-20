@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:WordForge">
     <Grid>
         <Grid.ColumnDefinitions>
+            <!-- Column 0 holds the sidebar and collapse ribbon -->
             <ColumnDefinition x:Name="SidebarColumn" Width="220"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
@@ -16,30 +17,73 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
-                <DockPanel Grid.Row="0" LastChildFill="True">
-                    <TextBlock Text="CHAPTERS" Foreground="#FFE5E7EB" FontWeight="Bold" Margin="8,0,0,0"/>
+                <DockPanel Grid.Row="0" LastChildFill="True" x:Name="SidebarHeader">
+                    <TextBlock x:Name="ChaptersLabel" Text="CHAPTERS" Foreground="#FFE5E7EB" FontWeight="Bold" Margin="8,0,0,0"/>
+                    <!-- Toggle collapse/expand -->
                     <Button x:Name="CollapseButton" Content="&lt;" Width="20" Height="20" Margin="2" HorizontalAlignment="Right" Click="CollapseButton_Click"/>
                 </DockPanel>
                 <TreeView Grid.Row="1" x:Name="ChapterTree" ItemsSource="{Binding Chapters}" SelectedItemChanged="ChapterTree_SelectedItemChanged" AllowDrop="True" PreviewMouseMove="ChapterTree_PreviewMouseMove" DragOver="ChapterTree_DragOver" Drop="ChapterTree_Drop">
                     <TreeView.Resources>
+                        <!-- Chapter template with hover menu button -->
                         <HierarchicalDataTemplate DataType="{x:Type local:Chapter}" ItemsSource="{Binding Scenes}">
-                            <StackPanel Orientation="Horizontal">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding Title}" Width="120"/>
-                                <Button Content="+" Width="20" Height="20" Margin="2" Tag="{Binding}" Click="AddScene_Click" ToolTip="Add Scene"/>
-                                <Button Content="e" Width="20" Height="20" Margin="2" Tag="{Binding}" Click="RenameChapter_Click" ToolTip="Rename Chapter"/>
-                                <Button Content="x" Width="20" Height="20" Margin="2" Tag="{Binding}" Click="DeleteChapter_Click" ToolTip="Delete Chapter"/>
-                            </StackPanel>
+                                <Button x:Name="ChapterMenuButton" Grid.Column="1" Content="⋮" Width="20" Height="20" Margin="2" Tag="{Binding}" Click="OpenChapterMenu" Visibility="Collapsed">
+                                    <Button.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Add Scene" Tag="{Binding}" Click="AddScene_Click"/>
+                                            <MenuItem Header="Rename" Tag="{Binding}" Click="RenameChapter_Click"/>
+                                            <MenuItem Header="Delete" Tag="{Binding}" Click="DeleteChapter_Click"/>
+                                        </ContextMenu>
+                                    </Button.ContextMenu>
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </Grid>
                         </HierarchicalDataTemplate>
+                        <!-- Scene template with hover menu button -->
                         <DataTemplate DataType="{x:Type local:Scene}">
-                            <StackPanel Orientation="Horizontal">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
                                 <TextBlock Text="{Binding Title}" Width="140"/>
-                                <Button Content="e" Width="20" Height="20" Margin="2" Tag="{Binding}" Click="RenameScene_Click" ToolTip="Rename Scene"/>
-                                <Button Content="x" Width="20" Height="20" Margin="2" Tag="{Binding}" Click="DeleteScene_Click" ToolTip="Delete Scene"/>
-                            </StackPanel>
+                                <Button x:Name="SceneMenuButton" Grid.Column="1" Content="⋮" Width="20" Height="20" Margin="2" Tag="{Binding}" Click="OpenSceneMenu" Visibility="Collapsed">
+                                    <Button.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="Rename" Tag="{Binding}" Click="RenameScene_Click"/>
+                                            <MenuItem Header="Delete" Tag="{Binding}" Click="DeleteScene_Click"/>
+                                        </ContextMenu>
+                                    </Button.ContextMenu>
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </Grid>
                         </DataTemplate>
                     </TreeView.Resources>
                 </TreeView>
-                <Button Grid.Row="2" Content="Add Chapter" Margin="4" Click="AddChapter_Click"/>
+                <Button x:Name="AddChapterButton" Grid.Row="2" Content="Add Chapter" Margin="4" Click="AddChapter_Click"/>
             </Grid>
         </Border>
 
@@ -54,7 +98,7 @@
             <Border Grid.Row="1" Background="#FF26282C" BorderBrush="#FF3B3F45" BorderThickness="1" CornerRadius="4">
                 <TextBox x:Name="Editor" AcceptsReturn="True" AcceptsTab="True" TextWrapping="Wrap"
                          Background="#FF26282C" Foreground="#FFE5E7EB" BorderThickness="0"
-                         VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                         VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
                          FontSize="14" Padding="10" TextChanged="Editor_TextChanged"/>
             </Border>
             <DockPanel Grid.Row="2" LastChildFill="True" Background="#FF1A1B1E" Margin="2,4,2,0">
