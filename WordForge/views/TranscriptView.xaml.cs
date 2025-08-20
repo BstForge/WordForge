@@ -37,6 +37,18 @@ public partial class TranscriptView : UserControl
         public string EditorText { get; set; } = string.Empty;
     }
 
+    private class RenameState
+    {
+        public TextBlock TextBlock { get; }
+        public string OriginalTitle { get; }
+
+        public RenameState(TextBlock textBlock, string originalTitle)
+        {
+            TextBlock = textBlock;
+            OriginalTitle = originalTitle;
+        }
+    }
+
     private static readonly Regex SceneBreakRegex = new("^\\s*\\*{3,}\\s*$", RegexOptions.Compiled | RegexOptions.Multiline);
 
     public TranscriptView()
@@ -124,8 +136,7 @@ public partial class TranscriptView : UserControl
             var textBlock = FindVisualChild<TextBlock>(item, "ChapterText");
             if (textBox != null && textBlock != null)
             {
-                textBox.Text = chapter.Title;
-                textBox.Tag = textBlock;
+                textBox.Tag = new RenameState(textBlock, chapter.Title);
                 textBlock.Visibility = Visibility.Collapsed;
                 textBox.Visibility = Visibility.Visible;
                 textBox.Focus();
@@ -150,8 +161,7 @@ public partial class TranscriptView : UserControl
                     var textBlock = FindVisualChild<TextBlock>(sceneItem, "SceneText");
                     if (textBox != null && textBlock != null)
                     {
-                        textBox.Text = scene.Title;
-                        textBox.Tag = textBlock;
+                        textBox.Tag = new RenameState(textBlock, scene.Title);
                         textBlock.Visibility = Visibility.Collapsed;
                         textBox.Visibility = Visibility.Visible;
                         textBox.Focus();
@@ -306,23 +316,27 @@ public partial class TranscriptView : UserControl
 
     private void FinishRename(TextBox tb, bool commit)
     {
-        var textBlock = tb.Tag as TextBlock;
-        if (textBlock != null)
-            textBlock.Visibility = Visibility.Visible;
+        if (tb.Tag is RenameState state)
+        {
+            state.TextBlock.Visibility = Visibility.Visible;
+            if (!commit)
+            {
+                if (tb.DataContext is Chapter ch)
+                    ch.Title = state.OriginalTitle;
+                else if (tb.DataContext is Scene sc)
+                    sc.Title = state.OriginalTitle;
+            }
+        }
+
         tb.Visibility = Visibility.Collapsed;
 
         if (commit)
         {
-            if (tb.DataContext is Chapter ch)
-            {
-                ch.Title = tb.Text;
-            }
-            else if (tb.DataContext is Scene sc)
-            {
-                sc.Title = tb.Text;
-            }
             ProjectService.CurrentProject.IsDirty = true;
         }
+
+        SelectItem(tb.DataContext);
+        tb.Tag = null;
     }
 
     private static T? FindParent<T>(DependencyObject? current) where T : DependencyObject
