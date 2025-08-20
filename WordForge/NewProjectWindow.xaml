@@ -13,9 +13,14 @@
             <TextBlock Text="Author:" Width="60" Foreground="#FFE5E7EB" VerticalAlignment="Center"/>
             <TextBox x:Name="AuthorBox" Width="220"/>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
             <TextBlock Text="Genre:" Width="60" Foreground="#FFE5E7EB" VerticalAlignment="Center"/>
             <ComboBox x:Name="GenreBox" Width="220"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+            <TextBlock Text="Save to:" Width="60" Foreground="#FFE5E7EB" VerticalAlignment="Center"/>
+            <TextBox x:Name="LocationBox" Width="140" IsReadOnly="True"/>
+            <Button Content="Choose Folder..." Width="100" Margin="4,0,0,0" Click="ChooseFolder_Click"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Width="75" Margin="0,0,8,0" Content="OK" Click="Ok_Click"/>

@@ -29,14 +29,16 @@ public static class ProjectService
     public static string? CurrentPath { get; private set; }
         = null;
 
-    public static void CreateNew(Project project)
+    public static void CreateNew(Project project, string? directory)
     {
-        var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        directory = string.IsNullOrWhiteSpace(directory)
+            ? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+            : directory;
+        Directory.CreateDirectory(directory);
         var fileName = SanitizeFileName(project.Title) + ".forge";
-        var path = Path.Combine(documents, fileName);
+        var path = Path.Combine(directory, fileName);
         project.Created = project.Saved = DateTime.Now;
-        SaveToPath(project, path);
-        SetCurrent(project, path);
+        SaveProject(project, path);
     }
 
     public static void Save()
@@ -55,15 +57,35 @@ public static class ProjectService
             };
             if (dialog.ShowDialog() == true)
             {
-                SaveToPath(CurrentProject, dialog.FileName);
-                CurrentPath = dialog.FileName;
+                SaveProject(CurrentProject, dialog.FileName);
             }
         }
         else
         {
-            SaveToPath(CurrentProject, CurrentPath);
+            SaveProject(CurrentProject, CurrentPath);
         }
-        UpdateWindowTitle();
+    }
+
+    public static void SaveAs()
+    {
+        if (CurrentProject == null)
+            return;
+
+        var dialog = new SaveFileDialog
+        {
+            Filter = "WordForge Project (*.forge)|*.forge",
+            DefaultExt = ".forge",
+            InitialDirectory = CurrentPath != null
+                ? Path.GetDirectoryName(CurrentPath)
+                : Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            FileName = CurrentPath != null
+                ? Path.GetFileName(CurrentPath)
+                : SanitizeFileName(CurrentProject.Title) + ".forge"
+        };
+        if (dialog.ShowDialog() == true)
+        {
+            SaveProject(CurrentProject, dialog.FileName);
+        }
     }
 
     public static void Load()
@@ -107,11 +129,19 @@ public static class ProjectService
         }
     }
 
-    private static string SanitizeFileName(string name)
+    public static string SanitizeFileName(string name)
     {
         foreach (var c in Path.GetInvalidFileNameChars())
             name = name.Replace(c, '_');
         return string.IsNullOrWhiteSpace(name) ? "project" : name;
+    }
+
+    public static void SaveProject(Project project, string path)
+    {
+        if (!path.EndsWith(".forge", StringComparison.OrdinalIgnoreCase))
+            path += ".forge";
+        SaveToPath(project, path);
+        SetCurrent(project, path);
     }
 }
 

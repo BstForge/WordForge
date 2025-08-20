@@ -22,13 +22,18 @@ public partial class FileMenu : UserControl
                 Author = window.ProjectAuthor,
                 Genre = window.ProjectGenre
             };
-            ProjectService.CreateNew(project);
+            ProjectService.CreateNew(project, window.ProjectLocation);
         }
     }
 
     private void Save_Click(object sender, RoutedEventArgs e)
     {
         ProjectService.Save();
+    }
+
+    private void SaveAs_Click(object sender, RoutedEventArgs e)
+    {
+        ProjectService.SaveAs();
     }
 
     private void Load_Click(object sender, RoutedEventArgs e)
