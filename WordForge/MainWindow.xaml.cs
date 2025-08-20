@@ -17,10 +17,15 @@ namespace WordForge
     /// </summary>
     public partial class MainWindow : Window
     {
+        public Grid TopMenuHostElement => TopMenuHost;
+        public Grid CenterHostElement => CenterHost;
+        public Border RightPaneHostElement => RightPaneHost;
+
         public MainWindow()
         {
             InitializeComponent();
             RightPaneService.Host = RightPaneContent;
+            RightPaneService.Container = RightPaneHost;
             TopMenuContent.Content = new TranscriptMenu();
             RightPaneService.Show(RightPaneKind.Timeline);
         }
