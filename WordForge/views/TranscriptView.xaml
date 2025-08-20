@@ -86,7 +86,7 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock x:Name="ChapterText" Grid.Column="0" Text="{Binding Title}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}" VerticalAlignment="Center">
+                                    <TextBlock x:Name="ChapterText" Grid.Column="0" Text="{Binding Title, Mode=OneWay}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}" VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Foreground" Value="#FFE5E7EB"/>
@@ -98,7 +98,7 @@
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
-                                    <TextBox x:Name="ChapterEditBox" Grid.Column="0" Text="{Binding Title, UpdateSourceTrigger=Explicit}" Visibility="Collapsed" Background="#FF26282C" Foreground="#FFE5E7EB" BorderBrush="#FF3B3F45" BorderThickness="1" KeyDown="RenameBox_KeyDown" LostFocus="RenameBox_LostFocus"/>
+                                    <TextBox x:Name="ChapterEditBox" Grid.Column="0" Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed" Background="#FF26282C" Foreground="#FFE5E7EB" BorderBrush="#FF3B3F45" BorderThickness="1" KeyDown="RenameBox_KeyDown" LostFocus="RenameBox_LostFocus"/>
                                     <Button x:Name="ChapterMenuButton" Grid.Column="1" Content="⋮" Width="20" Height="20" Margin="0" Click="OpenItemMenu" Visibility="Hidden" Focusable="True">
                                         <Button.Style>
                                             <Style TargetType="Button">
@@ -138,7 +138,7 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock x:Name="SceneText" Grid.Column="0" Text="{Binding Title}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}" VerticalAlignment="Center">
+                                    <TextBlock x:Name="SceneText" Grid.Column="0" Text="{Binding Title, Mode=OneWay}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}" VerticalAlignment="Center">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Foreground" Value="#FFE5E7EB"/>
@@ -150,7 +150,7 @@
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
-                                    <TextBox x:Name="SceneEditBox" Grid.Column="0" Text="{Binding Title, UpdateSourceTrigger=Explicit}" Visibility="Collapsed" Background="#FF26282C" Foreground="#FFE5E7EB" BorderBrush="#FF3B3F45" BorderThickness="1" KeyDown="RenameBox_KeyDown" LostFocus="RenameBox_LostFocus"/>
+                                    <TextBox x:Name="SceneEditBox" Grid.Column="0" Text="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed" Background="#FF26282C" Foreground="#FFE5E7EB" BorderBrush="#FF3B3F45" BorderThickness="1" KeyDown="RenameBox_KeyDown" LostFocus="RenameBox_LostFocus"/>
                                     <Button x:Name="SceneMenuButton" Grid.Column="1" Content="⋮" Width="20" Height="20" Margin="0" Click="OpenItemMenu" Visibility="Hidden" Focusable="True">
                                         <Button.Style>
                                             <Style TargetType="Button">

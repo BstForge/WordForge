@@ -1,15 +1,65 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace WordForge;
 
-public class Scene
+public class Scene : INotifyPropertyChanged
 {
-    public string Title { get; set; } = "Scene";
-    public string Text { get; set; } = string.Empty;
+    private string _title = "Scene";
+    private string _text = string.Empty;
+
+    public string Title
+    {
+        get => _title;
+        set
+        {
+            if (_title != value)
+            {
+                _title = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public string Text
+    {
+        get => _text;
+        set
+        {
+            if (_text != value)
+            {
+                _text = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
 
-public class Chapter
+public class Chapter : INotifyPropertyChanged
 {
-    public string Title { get; set; } = "Chapter";
+    private string _title = "Chapter";
+
+    public string Title
+    {
+        get => _title;
+        set
+        {
+            if (_title != value)
+            {
+                _title = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
     public ObservableCollection<Scene> Scenes { get; set; } = new();
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private void OnPropertyChanged([CallerMemberName] string? name = null) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
 }
