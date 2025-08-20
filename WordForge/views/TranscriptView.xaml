@@ -18,7 +18,7 @@
                 </Grid.RowDefinitions>
                 <DockPanel Grid.Row="0" LastChildFill="True">
                     <TextBlock Text="CHAPTERS" Foreground="#FFE5E7EB" FontWeight="Bold" Margin="8,0,0,0"/>
-                    <Button x:Name="CollapseButton" Content="<" Width="20" Height="20" Margin="2" HorizontalAlignment="Right" Click="CollapseButton_Click"/>
+                    <Button x:Name="CollapseButton" Content="&lt;" Width="20" Height="20" Margin="2" HorizontalAlignment="Right" Click="CollapseButton_Click"/>
                 </DockPanel>
                 <TreeView Grid.Row="1" x:Name="ChapterTree" ItemsSource="{Binding Chapters}" SelectedItemChanged="ChapterTree_SelectedItemChanged" AllowDrop="True" PreviewMouseMove="ChapterTree_PreviewMouseMove" DragOver="ChapterTree_DragOver" Drop="ChapterTree_Drop">
                     <TreeView.Resources>
