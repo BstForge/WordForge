@@ -5,6 +5,7 @@
         <StackPanel>
             <Button Content="New" Margin="0,0,0,4" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" Click="New_Click" />
             <Button Content="Save" Margin="0,0,0,4" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" Click="Save_Click" />
+            <Button Content="Save As" Margin="0,0,0,4" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" Click="SaveAs_Click" />
             <Button Content="Load" Margin="0,0,0,4" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" Click="Load_Click" />
             <Button Content="Properties" Margin="0,0,0,4" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" Click="Properties_Click"/>
             <Button Content="Print" Margin="0,0,0,4" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF" Foreground="#FF111111" />

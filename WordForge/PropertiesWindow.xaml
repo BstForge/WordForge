@@ -23,12 +23,37 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <DropShadowEffect x:Key="Shadow" Color="Black" Opacity="0.5" BlurRadius="10" ShadowDepth="0"/>
     </Window.Resources>
-    <StackPanel Margin="20">
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-            <TextBlock Text="Transitions:" Foreground="#FFE5E7EB" VerticalAlignment="Center" Margin="0,0,8,0"/>
-            <ToggleButton x:Name="TransitionsToggle" Style="{StaticResource ToggleSwitchStyle}" Width="50" Height="24"/>
-            <TextBlock x:Name="ToggleStateText" Foreground="#FFE5E7EB" VerticalAlignment="Center" Margin="8,0,0,0"/>
-        </StackPanel>
-    </StackPanel>
+    <Grid>
+        <Border Margin="20" Background="#FF232529" BorderBrush="#FF3B3F45" BorderThickness="1" CornerRadius="4" Padding="10" Effect="{StaticResource Shadow}">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Title:" Width="60" Foreground="#FFE5E7EB" VerticalAlignment="Center"/>
+                    <TextBox x:Name="TitleBox" Width="220"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Author:" Width="60" Foreground="#FFE5E7EB" VerticalAlignment="Center"/>
+                    <TextBox x:Name="AuthorBox" Width="220"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Genre:" Width="60" Foreground="#FFE5E7EB" VerticalAlignment="Center"/>
+                    <ComboBox x:Name="GenreBox" Width="220"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <TextBlock Text="Save to:" Width="60" Foreground="#FFE5E7EB" VerticalAlignment="Center"/>
+                    <TextBox x:Name="LocationBox" Width="140" IsReadOnly="True"/>
+                    <Button Content="Choose Folder..." Width="100" Margin="4,0,0,0" Click="ChooseFolder_Click"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,0,10">
+                    <TextBlock Text="Transitions:" Foreground="#FFE5E7EB" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <ToggleButton x:Name="TransitionsToggle" Style="{StaticResource ToggleSwitchStyle}" Width="50" Height="24"/>
+                    <TextBlock x:Name="ToggleStateText" Foreground="#FFE5E7EB" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Width="100" Content="Save Changes" Click="Save_Click"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
 </Window>
