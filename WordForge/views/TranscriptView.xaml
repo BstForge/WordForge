@@ -196,18 +196,39 @@
         <!-- Main editor area -->
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="28"/>
+                <RowDefinition Height="32"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="26"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="TRANSCRIPT" Foreground="#FFE5E7EB" FontWeight="Bold" Margin="8,0,0,0"/>
-            <Border Grid.Row="1" Background="#FF26282C" BorderBrush="#FF3B3F45" BorderThickness="1" CornerRadius="4">
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="TRANSCRIPT" Foreground="#FFE5E7EB" FontWeight="Bold" Margin="8,0,0,0" VerticalAlignment="Center"/>
+                <Button x:Name="InsertBreakButton" Grid.Column="1" Content="Insert Scene Break" Margin="0,0,8,0" Click="InsertBreak_Click" Background="#FF26282C" Foreground="#FFE5E7EB" BorderBrush="#FF3B3F45"/>
+            </Grid>
+            <Border x:Name="ChangeBanner" Grid.Row="1" Background="#FF34363B" BorderBrush="#FF3B3F45" BorderThickness="0,0,0,1" Visibility="Collapsed">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock x:Name="ChangeBannerText" VerticalAlignment="Center" Foreground="#FFE5E7EB" Margin="8,0"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,8,0">
+                        <Button x:Name="ApplySceneChangesButton" Content="Apply" Margin="0,0,4,0" Click="ApplySceneChanges_Click" Background="#FF26282C" Foreground="#FFE5E7EB" BorderBrush="#FF3B3F45"/>
+                        <Button Content="Dismiss" Click="DismissSceneChanges_Click" Background="#FF26282C" Foreground="#FFE5E7EB" BorderBrush="#FF3B3F45"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <Border Grid.Row="2" Background="#FF26282C" BorderBrush="#FF3B3F45" BorderThickness="1" CornerRadius="4">
                 <TextBox x:Name="Editor" AcceptsReturn="True" AcceptsTab="True" TextWrapping="Wrap"
                          Background="#FF26282C" Foreground="#FFE5E7EB" BorderThickness="0"
                          VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
-                         FontSize="14" Padding="10" TextChanged="Editor_TextChanged"/>
+                         FontSize="14" Padding="10" TextChanged="Editor_TextChanged" PreviewKeyDown="Editor_PreviewKeyDown"/>
             </Border>
-            <DockPanel Grid.Row="2" LastChildFill="True" Background="#FF1A1B1E" Margin="2,4,2,0">
+            <DockPanel Grid.Row="3" LastChildFill="True" Background="#FF1A1B1E" Margin="2,4,2,0">
                 <TextBlock x:Name="WordCountText" DockPanel.Dock="Left" Text="Words: 0" Foreground="#FFC9CDD3" Margin="6,0"/>
                 <TextBlock x:Name="CharCountText" DockPanel.Dock="Right" Text="Characters: 0" Foreground="#FFC9CDD3" Margin="6,0"/>
             </DockPanel>

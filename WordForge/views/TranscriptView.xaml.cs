@@ -1,10 +1,13 @@
 using System;
 using System.Linq;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Controls.Primitives;
+using System.Windows.Threading;
 using WordForge;
 
 namespace WordForge.Views;
@@ -18,10 +21,32 @@ public partial class TranscriptView : UserControl
     private DependencyObject? _dragStartSource;
     private object? _draggedData;
 
+    private readonly DispatcherTimer _sceneCheckTimer = new() { Interval = TimeSpan.FromMilliseconds(250) };
+    private Chapter? _pendingChapter;
+    private string? _pendingCombinedText;
+    private int? _pendingSegmentCount;
+    private readonly Stack<ApplyUndoState> _undoStack = new();
+    private readonly Stack<ApplyUndoState> _redoStack = new();
+
+    private class ApplyUndoState
+    {
+        public Chapter Chapter { get; set; } = null!;
+        public List<Scene> Scenes { get; set; } = new();
+        public object? SelectedItem { get; set; }
+        public int CaretIndex { get; set; }
+        public string EditorText { get; set; } = string.Empty;
+    }
+
+    private static readonly Regex SceneBreakRegex = new("^\\s*\\*{3,}\\s*$", RegexOptions.Compiled | RegexOptions.Multiline);
+
     public TranscriptView()
     {
         InitializeComponent();
         DataContext = ProjectService.CurrentProject;
+        _sceneCheckTimer.Tick += SceneCheckTimer_Tick;
+        ProjectService.BeforeSave += OnBeforeSave;
+        Unloaded += TranscriptView_Unloaded;
+        UpdateHeaderState();
         if (_sidebarCollapsed)
         {
             SidebarColumn.Width = new GridLength(24);
@@ -166,6 +191,7 @@ public partial class TranscriptView : UserControl
                 Editor.Text = string.Empty;
             }
             UpdateCounts();
+            UpdateHeaderState();
         }
     }
 
@@ -214,12 +240,16 @@ public partial class TranscriptView : UserControl
         if (_selectedScene != null)
         {
             Editor.Text = _selectedScene.Text;
+            HideBanner();
         }
         else if (_selectedChapter != null)
         {
             Editor.Text = string.Join("\n***\n", _selectedChapter.Scenes.Select(s => s.Text));
+            _sceneCheckTimer.Stop();
+            _sceneCheckTimer.Start();
         }
         UpdateCounts();
+        UpdateHeaderState();
     }
 
     private void OpenItemMenu(object sender, RoutedEventArgs e)
@@ -326,11 +356,17 @@ public partial class TranscriptView : UserControl
         }
         else if (_selectedChapter != null)
         {
-            var parts = Editor.Text.Split("\n***\n", StringSplitOptions.None);
-            for (int i = 0; i < _selectedChapter.Scenes.Count; i++)
+            var segments = GetSegments(Editor.Text);
+            for (int i = 0; i < Math.Min(segments.Count, _selectedChapter.Scenes.Count); i++)
             {
-                _selectedChapter.Scenes[i].Text = i < parts.Length ? parts[i] : string.Empty;
+                _selectedChapter.Scenes[i].Text = segments[i];
             }
+            if (_pendingChapter == _selectedChapter)
+            {
+                _pendingCombinedText = Editor.Text;
+            }
+            _sceneCheckTimer.Stop();
+            _sceneCheckTimer.Start();
         }
         ProjectService.CurrentProject.IsDirty = true;
         UpdateCounts();
@@ -338,17 +374,234 @@ public partial class TranscriptView : UserControl
 
     private void UpdateCounts()
     {
-        var text = Editor.Text;
+        var lines = Editor.Text.Replace("\r", string.Empty).Split('\n');
         if (_selectedChapter != null)
         {
-            text = string.Join("\n", text.Split('\n').Where(l => l != "***"));
+            lines = lines.Where(l => !SceneBreakRegex.IsMatch(l)).ToArray();
         }
+        var text = string.Join("\n", lines);
         var words = string.IsNullOrWhiteSpace(text)
             ? 0
             : text.Split(new[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries).Length;
-        var chars = text.Replace("\r", string.Empty).Replace("\n", string.Empty).Length;
+        var chars = text.Replace("\n", string.Empty).Length;
         WordCountText.Text = $"Words: {words}";
         CharCountText.Text = $"Characters: {chars}";
+    }
+
+    private List<string> GetSegments(string text) => SceneBreakRegex.Split(text).ToList();
+
+    private void SceneCheckTimer_Tick(object? sender, EventArgs e)
+    {
+        _sceneCheckTimer.Stop();
+        if (_selectedChapter == null) return;
+        var segments = GetSegments(Editor.Text);
+        var count = segments.Count;
+        var scenesCount = _selectedChapter.Scenes.Count;
+        if (count != scenesCount)
+        {
+            _pendingChapter = _selectedChapter;
+            _pendingCombinedText = Editor.Text;
+            _pendingSegmentCount = count;
+            ChangeBannerText.Text = $"Scene structure changed ({scenesCount} → {count}). Apply changes?";
+            ChangeBanner.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            if (_pendingChapter == _selectedChapter)
+            {
+                _pendingChapter = null;
+                _pendingCombinedText = null;
+                _pendingSegmentCount = null;
+            }
+            HideBanner();
+        }
+    }
+
+    private void InsertBreak_Click(object sender, RoutedEventArgs e)
+    {
+        if (_selectedChapter == null) return;
+        int caret = Editor.CaretIndex;
+        var insert = "\n\n***\n\n";
+        Editor.Text = Editor.Text.Insert(caret, insert);
+        Editor.CaretIndex = caret + insert.Length;
+        Editor.Focus();
+    }
+
+    private void ApplySceneChanges_Click(object sender, RoutedEventArgs e)
+    {
+        ApplyPendingChanges();
+    }
+
+    private void DismissSceneChanges_Click(object sender, RoutedEventArgs e)
+    {
+        _sceneCheckTimer.Stop();
+        HideBanner();
+    }
+
+    private void ApplyPendingChanges()
+    {
+        if (_pendingChapter == null || _pendingCombinedText == null || !_pendingSegmentCount.HasValue) return;
+        var chapter = _pendingChapter;
+        var segments = GetSegments(_pendingCombinedText);
+
+        var undoState = new ApplyUndoState
+        {
+            Chapter = chapter,
+            Scenes = chapter.Scenes.Select(s => new Scene { Title = s.Title, Text = s.Text }).ToList(),
+            SelectedItem = _selectedScene as object ?? _selectedChapter,
+            CaretIndex = Editor.CaretIndex,
+            EditorText = Editor.Text
+        };
+        _undoStack.Push(undoState);
+        _redoStack.Clear();
+
+        int oldCount = chapter.Scenes.Count;
+        int newCount = segments.Count;
+        int common = Math.Min(oldCount, newCount);
+        for (int i = 0; i < common; i++)
+            chapter.Scenes[i].Text = segments[i];
+        for (int i = oldCount; i < newCount; i++)
+            chapter.Scenes.Add(new Scene { Title = $"Scene {i + 1}", Text = segments[i] });
+        for (int i = chapter.Scenes.Count - 1; i >= newCount; i--)
+            chapter.Scenes.RemoveAt(i);
+
+        ProjectService.CurrentProject.IsDirty = true;
+
+        if (_selectedChapter == chapter)
+        {
+            Editor.Text = _pendingCombinedText;
+            Editor.CaretIndex = Math.Min(undoState.CaretIndex, Editor.Text.Length);
+            Editor.Focus();
+            UpdateCounts();
+        }
+
+        _pendingChapter = null;
+        _pendingCombinedText = null;
+        _pendingSegmentCount = null;
+        HideBanner();
+    }
+
+    private void OnBeforeSave()
+    {
+        if (_pendingSegmentCount.HasValue)
+        {
+            ApplyPendingChanges();
+        }
+    }
+
+    private void Editor_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Z && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+        {
+            if (!Editor.CanUndo && _undoStack.Count > 0)
+            {
+                UndoApply();
+                e.Handled = true;
+            }
+        }
+        else if (e.Key == Key.Y && Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+        {
+            if (!Editor.CanRedo && _redoStack.Count > 0)
+            {
+                RedoApply();
+                e.Handled = true;
+            }
+        }
+    }
+
+    private void UndoApply()
+    {
+        if (_undoStack.Count == 0) return;
+        var state = _undoStack.Pop();
+        var chapter = state.Chapter;
+        var redoState = new ApplyUndoState
+        {
+            Chapter = chapter,
+            Scenes = chapter.Scenes.Select(s => new Scene { Title = s.Title, Text = s.Text }).ToList(),
+            SelectedItem = _selectedScene as object ?? _selectedChapter,
+            CaretIndex = Editor.CaretIndex,
+            EditorText = Editor.Text
+        };
+        _redoStack.Push(redoState);
+
+        chapter.Scenes.Clear();
+        foreach (var sc in state.Scenes)
+            chapter.Scenes.Add(new Scene { Title = sc.Title, Text = sc.Text });
+
+        if (state.SelectedItem is Scene scn)
+        {
+            _selectedScene = scn;
+            _selectedChapter = null;
+            SelectItem(scn);
+            Editor.Text = scn.Text;
+        }
+        else if (state.SelectedItem is Chapter ch)
+        {
+            _selectedChapter = ch;
+            _selectedScene = null;
+            SelectItem(ch);
+            Editor.Text = state.EditorText;
+        }
+        Editor.CaretIndex = Math.Min(state.CaretIndex, Editor.Text.Length);
+        UpdateCounts();
+        HideBanner();
+    }
+
+    private void RedoApply()
+    {
+        if (_redoStack.Count == 0) return;
+        var state = _redoStack.Pop();
+        var chapter = state.Chapter;
+        var undoState = new ApplyUndoState
+        {
+            Chapter = chapter,
+            Scenes = chapter.Scenes.Select(s => new Scene { Title = s.Title, Text = s.Text }).ToList(),
+            SelectedItem = _selectedScene as object ?? _selectedChapter,
+            CaretIndex = Editor.CaretIndex,
+            EditorText = Editor.Text
+        };
+        _undoStack.Push(undoState);
+
+        chapter.Scenes.Clear();
+        foreach (var sc in state.Scenes)
+            chapter.Scenes.Add(new Scene { Title = sc.Title, Text = sc.Text });
+
+        if (state.SelectedItem is Scene scn)
+        {
+            _selectedScene = scn;
+            _selectedChapter = null;
+            SelectItem(scn);
+            Editor.Text = scn.Text;
+        }
+        else if (state.SelectedItem is Chapter ch)
+        {
+            _selectedChapter = ch;
+            _selectedScene = null;
+            SelectItem(ch);
+            Editor.Text = state.EditorText;
+        }
+        Editor.CaretIndex = Math.Min(state.CaretIndex, Editor.Text.Length);
+        UpdateCounts();
+        HideBanner();
+    }
+
+    private void HideBanner()
+    {
+        ChangeBanner.Visibility = Visibility.Collapsed;
+    }
+
+    private void UpdateHeaderState()
+    {
+        InsertBreakButton.IsEnabled = _selectedChapter != null;
+        if (_selectedChapter == null)
+        {
+            HideBanner();
+        }
+    }
+
+    private void TranscriptView_Unloaded(object sender, RoutedEventArgs e)
+    {
+        ProjectService.BeforeSave -= OnBeforeSave;
     }
 
     // Drag and drop handling
