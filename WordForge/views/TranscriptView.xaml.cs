@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Controls.Primitives;
 using WordForge;
 
 namespace WordForge.Views;
@@ -13,7 +14,9 @@ public partial class TranscriptView : UserControl
     private Chapter? _selectedChapter;
     private Scene? _selectedScene;
     private static bool _sidebarCollapsed = false;
-    private Point _dragStart;
+    private Point _dragStartPoint;
+    private DependencyObject? _dragStartSource;
+    private object? _draggedData;
 
     public TranscriptView()
     {
@@ -25,6 +28,7 @@ public partial class TranscriptView : UserControl
             ChaptersLabel.Visibility = Visibility.Collapsed;
             ChapterTree.Visibility = Visibility.Collapsed;
             AddChapterButton.Visibility = Visibility.Collapsed;
+            AddChapterBar.Visibility = Visibility.Collapsed;
             CollapseButton.Content = ">";
         }
     }
@@ -38,6 +42,7 @@ public partial class TranscriptView : UserControl
             ChaptersLabel.Visibility = Visibility.Collapsed;
             ChapterTree.Visibility = Visibility.Collapsed;
             AddChapterButton.Visibility = Visibility.Collapsed;
+            AddChapterBar.Visibility = Visibility.Collapsed;
             CollapseButton.Content = ">";
         }
         else
@@ -46,6 +51,7 @@ public partial class TranscriptView : UserControl
             ChaptersLabel.Visibility = Visibility.Visible;
             ChapterTree.Visibility = Visibility.Visible;
             AddChapterButton.Visibility = Visibility.Visible;
+            AddChapterBar.Visibility = Visibility.Visible;
             CollapseButton.Content = "<";
         }
     }
@@ -346,19 +352,47 @@ public partial class TranscriptView : UserControl
     }
 
     // Drag and drop handling
+    private void ChapterTree_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        _dragStartPoint = e.GetPosition(null);
+        _dragStartSource = null;
+        _draggedData = null;
+
+        if (e.OriginalSource is not DependencyObject source)
+            return;
+
+        if (FindParent<ContextMenu>(source) != null) return;
+        if (FindParent<ScrollBar>(source) != null) return;
+        if (FindParent<ButtonBase>(source) != null) return;
+        if (FindParent<ToggleButton>(source) != null) return;
+
+        var item = FindParent<TreeViewItem>(source);
+        if (item != null)
+        {
+            _dragStartSource = source;
+            _draggedData = item.DataContext;
+        }
+    }
+
+    private void ChapterTree_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        _dragStartSource = null;
+        _draggedData = null;
+    }
+
     private void ChapterTree_PreviewMouseMove(object sender, MouseEventArgs e)
     {
-        if (e.LeftButton == MouseButtonState.Pressed)
+        if (e.LeftButton == MouseButtonState.Pressed && _dragStartSource != null && _draggedData != null)
         {
-            if (_dragStart == default)
-                _dragStart = e.GetPosition(null);
-            var diff = e.GetPosition(null) - _dragStart;
+            var diff = e.GetPosition(null) - _dragStartPoint;
             if (Math.Abs(diff.X) > SystemParameters.MinimumHorizontalDragDistance || Math.Abs(diff.Y) > SystemParameters.MinimumVerticalDragDistance)
             {
-                if (ChapterTree.SelectedItem != null)
+                if (ChapterTree.SelectedItem == _draggedData)
                 {
-                    DragDrop.DoDragDrop(ChapterTree, ChapterTree.SelectedItem, DragDropEffects.Move);
+                    DragDrop.DoDragDrop(ChapterTree, _draggedData, DragDropEffects.Move);
                 }
+                _dragStartSource = null;
+                _draggedData = null;
             }
         }
     }
@@ -375,25 +409,25 @@ public partial class TranscriptView : UserControl
 
     private void ChapterTree_Drop(object sender, DragEventArgs e)
     {
-        if (e.Data.GetData(typeof(Chapter)) is Chapter chapter)
+        if (e.Effects != DragDropEffects.Move)
+            return;
+
+        if (_draggedData is Chapter && e.Data.GetData(typeof(Chapter)) is Chapter chapter)
         {
-            if (e.OriginalSource is FrameworkElement fe && fe.DataContext is Chapter targetChapter)
+            if (e.OriginalSource is FrameworkElement fe && fe.DataContext is Chapter targetChapter && chapter != targetChapter)
             {
-                if (chapter != targetChapter)
+                var list = ProjectService.CurrentProject.Chapters;
+                var oldIndex = list.IndexOf(chapter);
+                var newIndex = list.IndexOf(targetChapter);
+                if (oldIndex >= 0 && newIndex >= 0)
                 {
-                    var list = ProjectService.CurrentProject.Chapters;
-                    var oldIndex = list.IndexOf(chapter);
-                    var newIndex = list.IndexOf(targetChapter);
-                    if (oldIndex >= 0 && newIndex >= 0)
-                    {
-                        list.Move(oldIndex, newIndex);
-                        ProjectService.CurrentProject.IsDirty = true;
-                        SelectItem(chapter);
-                    }
+                    list.Move(oldIndex, newIndex);
+                    ProjectService.CurrentProject.IsDirty = true;
+                    SelectItem(chapter);
                 }
             }
         }
-        else if (e.Data.GetData(typeof(Scene)) is Scene scene)
+        else if (_draggedData is Scene && e.Data.GetData(typeof(Scene)) is Scene scene)
         {
             if (e.OriginalSource is FrameworkElement fe)
             {
