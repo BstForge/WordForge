@@ -9,6 +9,8 @@ public static class TransitionService
 {
     public static bool TransitionsEnabled { get; set; } = true;
 
+    private const double DurationScale = 2.5;
+
     private static TranslateTransform GetTransform(UIElement element)
     {
         if (element.RenderTransform is TranslateTransform t)
@@ -32,13 +34,13 @@ public static class TransitionService
         element.IsHitTestVisible = false;
 
         double offset = element.RenderSize.Height;
-        var retract = new DoubleAnimation(-offset, TimeSpan.FromMilliseconds(180))
+        var retract = new DoubleAnimation(-offset, TimeSpan.FromMilliseconds(180 * DurationScale))
         {
             EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
         };
         retract.Completed += (_, __) =>
         {
-            var expand = new DoubleAnimation(0, TimeSpan.FromMilliseconds(220))
+            var expand = new DoubleAnimation(0, TimeSpan.FromMilliseconds(220 * DurationScale))
             {
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
             };
@@ -66,14 +68,14 @@ public static class TransitionService
         transform.X = 0;
         element.IsHitTestVisible = false;
 
-        var retract = new DoubleAnimation(offset, TimeSpan.FromMilliseconds(180))
+        var retract = new DoubleAnimation(offset, TimeSpan.FromMilliseconds(180 * DurationScale))
         {
             EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
         };
         retract.Completed += (_, __) =>
         {
             midwayAction?.Invoke();
-            var expand = new DoubleAnimation(0, TimeSpan.FromMilliseconds(220))
+            var expand = new DoubleAnimation(0, TimeSpan.FromMilliseconds(220 * DurationScale))
             {
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
             };
