@@ -17,13 +17,18 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
-                <DockPanel Grid.Row="0" LastChildFill="True" x:Name="SidebarHeader">
-                    <TextBlock x:Name="ChaptersLabel" Text="CHAPTERS" Foreground="#FFE5E7EB" FontWeight="Bold" Margin="8,0,0,0"/>
-                    <!-- Toggle collapse/expand -->
-                    <Button x:Name="CollapseButton" Content="&lt;" Width="20" Height="20" Margin="2" HorizontalAlignment="Right" Click="CollapseButton_Click"/>
-                </DockPanel>
-                <TreeView Grid.Row="1" x:Name="ChapterTree" ItemsSource="{Binding Chapters}" SelectedItemChanged="ChapterTree_SelectedItemChanged" AllowDrop="True" PreviewMouseMove="ChapterTree_PreviewMouseMove" DragOver="ChapterTree_DragOver" Drop="ChapterTree_Drop" ScrollViewer.HorizontalScrollBarVisibility="Disabled" PreviewMouseRightButtonDown="ChapterTree_PreviewMouseRightButtonDown">
+                <Border Grid.Row="0" Background="#FF1A1B1E" BorderBrush="#FF3B3F45" BorderThickness="0,0,0,1">
+                    <DockPanel LastChildFill="True" x:Name="SidebarHeader">
+                        <TextBlock x:Name="ChaptersLabel" Text="CHAPTERS" Foreground="#FFE5E7EB" FontWeight="Bold" Margin="8,0,0,0"/>
+                        <!-- Toggle collapse/expand -->
+                        <Button x:Name="CollapseButton" Content="&lt;" Width="20" Height="20" Margin="2" HorizontalAlignment="Right" Click="CollapseButton_Click" Background="#FF26282C" Foreground="#FFE5E7EB" BorderBrush="#FF3B3F45"/>
+                    </DockPanel>
+                </Border>
+                <TreeView Grid.Row="1" x:Name="ChapterTree" ItemsSource="{Binding Chapters}" SelectedItemChanged="ChapterTree_SelectedItemChanged" AllowDrop="True" PreviewMouseMove="ChapterTree_PreviewMouseMove" DragOver="ChapterTree_DragOver" Drop="ChapterTree_Drop" PreviewMouseRightButtonDown="ChapterTree_PreviewMouseRightButtonDown" PreviewMouseLeftButtonDown="ChapterTree_PreviewMouseLeftButtonDown" PreviewMouseLeftButtonUp="ChapterTree_PreviewMouseLeftButtonUp" Background="#FF1A1B1E" Foreground="#FFE5E7EB" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <TreeView.Resources>
+                        <Style TargetType="ScrollViewer">
+                            <Setter Property="Background" Value="#FF1A1B1E"/>
+                        </Style>
                         <ContextMenu x:Key="ChapterContextMenu" x:Shared="False" Background="#FF26282C" BorderBrush="#FF3B3F45" Foreground="#FFE5E7EB">
                             <ContextMenu.Resources>
                                 <Style TargetType="MenuItem">
@@ -62,20 +67,37 @@
                         <Style x:Key="ChapterItemStyle" TargetType="TreeViewItem">
                             <Setter Property="ContextMenu" Value="{StaticResource ChapterContextMenu}"/>
                             <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="#FFE5E7EB"/>
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                         </Style>
                         <Style x:Key="SceneItemStyle" TargetType="TreeViewItem">
                             <Setter Property="ContextMenu" Value="{StaticResource SceneContextMenu}"/>
                             <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="#FFE5E7EB"/>
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
                         </Style>
                         <!-- Chapter template with overflow button -->
                         <HierarchicalDataTemplate DataType="{x:Type local:Chapter}" ItemsSource="{Binding Scenes}" ItemContainerStyle="{StaticResource SceneItemStyle}">
-                            <Border x:Name="ChapterBorder" Padding="4,2" BorderThickness="0,0,0,1" BorderBrush="#FF3B3F45">
+                            <Border x:Name="ChapterBorder" Padding="6,4" BorderThickness="0,0,0,1" BorderBrush="#FF3B3F45">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock x:Name="ChapterText" Grid.Column="0" Text="{Binding Title}" Foreground="#FFE5E7EB" TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="ChapterText" Grid.Column="0" Text="{Binding Title}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}" VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="#FFE5E7EB"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
+                                                    <Setter Property="Foreground" Value="#FFE5E7EB"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                                     <TextBox x:Name="ChapterEditBox" Grid.Column="0" Text="{Binding Title, UpdateSourceTrigger=Explicit}" Visibility="Collapsed" Background="#FF26282C" Foreground="#FFE5E7EB" BorderBrush="#FF3B3F45" BorderThickness="1" KeyDown="RenameBox_KeyDown" LostFocus="RenameBox_LostFocus"/>
                                     <Button x:Name="ChapterMenuButton" Grid.Column="1" Content="⋮" Width="20" Height="20" Margin="0" Click="OpenItemMenu" Visibility="Hidden" Focusable="True">
                                         <Button.Style>
@@ -110,13 +132,24 @@
                         </HierarchicalDataTemplate>
                         <!-- Scene template with overflow button -->
                         <DataTemplate DataType="{x:Type local:Scene}">
-                            <Border x:Name="SceneBorder" Padding="4,2" BorderThickness="0,0,0,1" BorderBrush="#FF3B3F45">
+                            <Border x:Name="SceneBorder" Padding="6,4" BorderThickness="0,0,0,1" BorderBrush="#FF3B3F45">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock x:Name="SceneText" Grid.Column="0" Text="{Binding Title}" Foreground="#FFE5E7EB" TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="SceneText" Grid.Column="0" Text="{Binding Title}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Title}" VerticalAlignment="Center">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="#FFE5E7EB"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TreeViewItem}}" Value="True">
+                                                    <Setter Property="Foreground" Value="#FFE5E7EB"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                                     <TextBox x:Name="SceneEditBox" Grid.Column="0" Text="{Binding Title, UpdateSourceTrigger=Explicit}" Visibility="Collapsed" Background="#FF26282C" Foreground="#FFE5E7EB" BorderBrush="#FF3B3F45" BorderThickness="1" KeyDown="RenameBox_KeyDown" LostFocus="RenameBox_LostFocus"/>
                                     <Button x:Name="SceneMenuButton" Grid.Column="1" Content="⋮" Width="20" Height="20" Margin="0" Click="OpenItemMenu" Visibility="Hidden" Focusable="True">
                                         <Button.Style>
@@ -154,7 +187,9 @@
                         <StaticResource ResourceKey="ChapterItemStyle"/>
                     </TreeView.ItemContainerStyle>
                 </TreeView>
-                <Button x:Name="AddChapterButton" Grid.Row="2" Content="Add Chapter" Margin="4" Click="AddChapter_Click"/>
+                <Border x:Name="AddChapterBar" Grid.Row="2" Background="#FF1A1B1E" BorderBrush="#FF3B3F45" BorderThickness="0,1,0,0">
+                    <Button x:Name="AddChapterButton" Content="Add Chapter" Margin="4" Click="AddChapter_Click" Background="#FF26282C" Foreground="#FFE5E7EB" BorderBrush="#FF3B3F45"/>
+                </Border>
             </Grid>
         </Border>
 
