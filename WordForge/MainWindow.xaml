@@ -38,28 +38,7 @@
 
             <!-- Center editor surface -->
             <Grid x:Name="CenterHost" Grid.Column="1" Background="#FF1A1B1E" Margin="12,0,12,0" ClipToBounds="True">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="28"/>
-                    <!-- Section title -->
-                    <RowDefinition Height="*"/>
-                    <!-- Editor -->
-                    <RowDefinition Height="26"/>
-                    <!-- word/char bar -->
-                </Grid.RowDefinitions>
-
-                <TextBlock Grid.Row="0" Text="INPUT VIEW" Foreground="#FFE5E7EB" FontWeight="Bold" Margin="8,0,0,0" />
-
-                <Border Grid.Row="1" Background="#FF26282C" BorderBrush="#FF3B3F45" BorderThickness="1" CornerRadius="4">
-                    <TextBox AcceptsReturn="True" AcceptsTab="True" TextWrapping="Wrap"
-                             Background="#FF26282C" Foreground="#FFE5E7EB" BorderThickness="0"
-                             VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
-                             FontSize="14" Padding="10"/>
-                </Border>
-
-                <DockPanel Grid.Row="2" LastChildFill="True" Background="#FF1A1B1E" Margin="2,4,2,0">
-                    <TextBlock DockPanel.Dock="Left" Text="Words: 0" Foreground="#FFC9CDD3" Margin="6,0"/>
-                    <TextBlock DockPanel.Dock="Right" Text="Characters: 0" Foreground="#FFC9CDD3" Margin="6,0"/>
-                </DockPanel>
+                <ContentControl x:Name="CenterContent"/>
             </Grid>
 
             <!-- Right pane (~25%) -->

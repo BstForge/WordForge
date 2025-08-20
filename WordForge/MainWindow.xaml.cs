@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WordForge.Menus.TopMenu;
+using WordForge.Views;
 
 namespace WordForge
 {
@@ -19,6 +20,7 @@ namespace WordForge
     {
         public Grid TopMenuHostElement => TopMenuHost;
         public Grid CenterHostElement => CenterHost;
+        public ContentControl CenterContentElement => CenterContent;
         public Border RightPaneHostElement => RightPaneHost;
 
         public MainWindow()
@@ -27,6 +29,7 @@ namespace WordForge
             RightPaneService.Host = RightPaneContent;
             RightPaneService.Container = RightPaneHost;
             TopMenuContent.Content = new TranscriptMenu();
+            CenterContentElement.Content = new TranscriptView();
             RightPaneService.Show(RightPaneKind.Timeline);
         }
     }
