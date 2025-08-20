@@ -3,6 +3,7 @@ using System.IO;
 using System.Text.Json;
 using System.Windows;
 using Microsoft.Win32;
+using System.Collections.ObjectModel;
 
 namespace WordForge;
 
@@ -15,6 +16,8 @@ public record Project
         = DateTime.Now;
     public DateTime Saved { get; set; }
         = DateTime.Now;
+    public ObservableCollection<Chapter> Chapters { get; set; } = new();
+    public bool IsDirty { get; set; } = false;
 }
 
 public static class ProjectService
@@ -112,12 +115,14 @@ public static class ProjectService
         project.Saved = DateTime.Now;
         var json = JsonSerializer.Serialize(project, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(path, json);
+        project.IsDirty = false;
     }
 
     private static void SetCurrent(Project project, string path)
     {
         CurrentProject = project;
         CurrentPath = path;
+        CurrentProject.IsDirty = false;
         UpdateWindowTitle();
     }
 
