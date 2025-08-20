@@ -19,13 +19,34 @@ public partial class TranscriptView : UserControl
         InitializeComponent();
         DataContext = ProjectService.CurrentProject;
         if (_sidebarCollapsed)
-            SidebarColumn.Width = new GridLength(0);
+        {
+            SidebarColumn.Width = new GridLength(24);
+            ChaptersLabel.Visibility = Visibility.Collapsed;
+            ChapterTree.Visibility = Visibility.Collapsed;
+            AddChapterButton.Visibility = Visibility.Collapsed;
+            CollapseButton.Content = ">";
+        }
     }
 
     private void CollapseButton_Click(object sender, RoutedEventArgs e)
     {
         _sidebarCollapsed = !_sidebarCollapsed;
-        SidebarColumn.Width = _sidebarCollapsed ? new GridLength(0) : new GridLength(220);
+        if (_sidebarCollapsed)
+        {
+            SidebarColumn.Width = new GridLength(24);
+            ChaptersLabel.Visibility = Visibility.Collapsed;
+            ChapterTree.Visibility = Visibility.Collapsed;
+            AddChapterButton.Visibility = Visibility.Collapsed;
+            CollapseButton.Content = ">";
+        }
+        else
+        {
+            SidebarColumn.Width = new GridLength(220);
+            ChaptersLabel.Visibility = Visibility.Visible;
+            ChapterTree.Visibility = Visibility.Visible;
+            AddChapterButton.Visibility = Visibility.Visible;
+            CollapseButton.Content = "<";
+        }
     }
 
     private void AddChapter_Click(object sender, RoutedEventArgs e)
@@ -38,11 +59,27 @@ public partial class TranscriptView : UserControl
 
     private void AddScene_Click(object sender, RoutedEventArgs e)
     {
-        if ((sender as Button)?.Tag is Chapter chapter)
+        var chapter = (sender as FrameworkElement)?.Tag as Chapter;
+        if (chapter == null) return;
+
+        // Ensure unique default name
+        int idx = 1;
+        string name;
+        do
         {
-            chapter.Scenes.Add(new Scene { Title = $"Scene {chapter.Scenes.Count + 1}" });
-            ProjectService.CurrentProject.IsDirty = true;
-        }
+            name = $"Scene {idx++}";
+        } while (chapter.Scenes.Any(s => s.Title == name));
+
+        var scene = new Scene { Title = name };
+        chapter.Scenes.Add(scene);
+        ProjectService.CurrentProject.IsDirty = true;
+
+        // Select the new scene
+        _selectedScene = scene;
+        _selectedChapter = null;
+        ChapterTree.SelectedItem = scene;
+        Editor.Text = scene.Text;
+        UpdateCounts();
     }
 
     private void RenameChapter_Click(object sender, RoutedEventArgs e)
@@ -73,31 +110,69 @@ public partial class TranscriptView : UserControl
 
     private void DeleteChapter_Click(object sender, RoutedEventArgs e)
     {
-        if ((sender as Button)?.Tag is Chapter chapter)
+        var chapter = (sender as FrameworkElement)?.Tag as Chapter;
+        if (chapter == null) return;
+        if (MessageBox.Show("Delete chapter and all scenes?", "Confirm", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
         {
-            if (MessageBox.Show("Delete chapter and all scenes?", "Confirm", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            var list = ProjectService.CurrentProject.Chapters;
+            var index = list.IndexOf(chapter);
+            list.Remove(chapter);
+            ProjectService.CurrentProject.IsDirty = true;
+            // Select neighbor
+            if (list.Count > 0)
             {
-                ProjectService.CurrentProject.Chapters.Remove(chapter);
-                ProjectService.CurrentProject.IsDirty = true;
+                var newIndex = Math.Min(index, list.Count - 1);
+                var newChapter = list[newIndex];
+                ChapterTree.SelectedItem = newChapter;
+                _selectedChapter = newChapter;
+                _selectedScene = null;
+                Editor.Text = string.Join("\n***\n", newChapter.Scenes.Select(s => s.Text));
             }
+            else
+            {
+                ChapterTree.SelectedItem = null;
+                _selectedChapter = null;
+                _selectedScene = null;
+                Editor.Text = string.Empty;
+            }
+            UpdateCounts();
         }
     }
 
     private void DeleteScene_Click(object sender, RoutedEventArgs e)
     {
-        if ((sender as Button)?.Tag is Scene scene)
+        var scene = (sender as FrameworkElement)?.Tag as Scene;
+        if (scene == null) return;
+        foreach (var chapter in ProjectService.CurrentProject.Chapters)
         {
-            foreach (var chapter in ProjectService.CurrentProject.Chapters)
+            if (chapter.Scenes.Contains(scene))
             {
-                if (chapter.Scenes.Contains(scene))
+                if (MessageBox.Show("Delete scene?", "Confirm", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    if (MessageBox.Show("Delete scene?", "Confirm", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                    var list = chapter.Scenes;
+                    var index = list.IndexOf(scene);
+                    list.Remove(scene);
+                    ProjectService.CurrentProject.IsDirty = true;
+                    // Select neighbor scene or chapter
+                    if (list.Count > 0)
                     {
-                        chapter.Scenes.Remove(scene);
-                        ProjectService.CurrentProject.IsDirty = true;
+                        var newIndex = Math.Min(index, list.Count - 1);
+                        var newScene = list[newIndex];
+                        ChapterTree.SelectedItem = newScene;
+                        _selectedScene = newScene;
+                        _selectedChapter = null;
+                        Editor.Text = newScene.Text;
                     }
-                    break;
+                    else
+                    {
+                        ChapterTree.SelectedItem = chapter;
+                        _selectedScene = null;
+                        _selectedChapter = chapter;
+                        Editor.Text = string.Join("\n***\n", chapter.Scenes.Select(s => s.Text));
+                    }
+                    UpdateCounts();
                 }
+                break;
             }
         }
     }
@@ -115,6 +190,24 @@ public partial class TranscriptView : UserControl
             Editor.Text = string.Join("\n***\n", _selectedChapter.Scenes.Select(s => s.Text));
         }
         UpdateCounts();
+    }
+
+    private void OpenChapterMenu(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.ContextMenu != null)
+        {
+            btn.ContextMenu.PlacementTarget = btn;
+            btn.ContextMenu.IsOpen = true;
+        }
+    }
+
+    private void OpenSceneMenu(object sender, RoutedEventArgs e)
+    {
+        if (sender is Button btn && btn.ContextMenu != null)
+        {
+            btn.ContextMenu.PlacementTarget = btn;
+            btn.ContextMenu.IsOpen = true;
+        }
     }
 
     private void Editor_TextChanged(object sender, TextChangedEventArgs e)
