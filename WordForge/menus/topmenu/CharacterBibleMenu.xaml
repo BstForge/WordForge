@@ -1,4 +1,4 @@
-<UserControl x:Class="WordForge.Menus.TopMenu.TranscriptMenu"
+<UserControl x:Class="WordForge.Menus.TopMenu.CharacterBibleMenu"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:menus="clr-namespace:WordForge.Menus">
@@ -54,9 +54,6 @@
                     </Grid.RowDefinitions>
                     <TextBlock Text="Bibles" Foreground="#FFE5E7EB" FontWeight="Bold" HorizontalAlignment="Center"/>
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button Width="90" Height="36" Margin="0,0,8,0"
-                                Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
-                                Foreground="#FF111111" FontWeight="SemiBold" Content="Character"/>
                         <Button Width="90" Height="36" Margin="0,0,8,0"
                                 Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
                                 Foreground="#FF111111" FontWeight="SemiBold" Content="Location"/>
