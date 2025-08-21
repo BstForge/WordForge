@@ -175,6 +175,56 @@ public static class ProjectService
         }
     }
 
+    /// <summary>
+    /// Overload that loads a specific .forge path (used by NewProjectWindow “Load Project”).
+    /// </summary>
+    public static void Load(string forgePath)
+    {
+        if (string.IsNullOrWhiteSpace(forgePath) || !File.Exists(forgePath))
+        {
+            MessageBox.Show("The selected project file was not found.", "Open Project",
+                MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        var autosave = GetAutosavePath(forgePath);
+        if (File.Exists(autosave) && File.GetLastWriteTime(autosave) > File.GetLastWriteTime(forgePath))
+        {
+            if (MessageBox.Show("A newer autosave exists. Recover?", "Autosave", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    var recovered = LoadFromPath(autosave);
+                    if (recovered != null)
+                    {
+                        SetCurrent(recovered, forgePath);
+                        CurrentProject.IsDirty = true;
+                        InitializeUI();
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Load", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+        }
+
+        try
+        {
+            var project = LoadFromPath(forgePath);
+            if (project != null)
+            {
+                SetCurrent(project, forgePath);
+                InitializeUI();
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Load", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
     public static bool LoadFromFile(string path)
     {
         try
@@ -431,4 +481,3 @@ public static class ProjectService
 
     public static void SaveCopy(Project project, string path) => SaveToPath(project, path, false);
 }
-
