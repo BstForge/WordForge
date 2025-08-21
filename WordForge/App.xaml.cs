@@ -7,28 +7,49 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
-        var window = new NewProjectWindow();
-        if (window.ShowDialog() == true)
+        while (true)
         {
-            var main = new MainWindow();
-            MainWindow = main;
-            if (!window.IsLoad)
+            var window = new NewProjectWindow();
+            window.ShowDialog();
+            var result = window.Result;
+
+            if (result.Action == StartupAction.Cancel)
+            {
+                Shutdown();
+                return;
+            }
+
+            if (result.Action == StartupAction.New)
             {
                 var project = new Project
                 {
-                    Title = window.ProjectTitle,
-                    Author = window.ProjectAuthor,
-                    Genre = window.ProjectGenre
+                    Title = result.Title ?? string.Empty,
+                    Author = result.Author ?? string.Empty,
+                    Genre = result.Genre ?? string.Empty
                 };
-                ProjectService.CreateNew(project, window.ProjectLocation);
+                var chapter = new Chapter { Title = "Chapter 1" };
+                chapter.Scenes.Add(new Scene { Title = "Scene 1" });
+                project.Chapters.Add(chapter);
+                ProjectService.StartNew(project, result.FolderPath);
+                break;
             }
-            main.Show();
-            ProjectService.InitializeUI();
+
+            if (result.Action == StartupAction.Load)
+            {
+                if (!string.IsNullOrWhiteSpace(result.LoadPath) && ProjectService.LoadFromFile(result.LoadPath))
+                {
+                    break;
+                }
+                MessageBox.Show("Failed to load project.", "Load", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
-        else
-        {
-            Shutdown();
-        }
+
+        var main = new MainWindow();
+        MainWindow = main;
+        main.Show();
+        Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
+        ProjectService.InitializeUI();
     }
 }
