@@ -3,38 +3,147 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:WordForge.Desktop.ViewModels"
-        xmlns:models="clr-namespace:WordForge.Core.Models;assembly=WordForge.Core"
         mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
         x:Class="WordForge.Desktop.MainWindow"
         Title="WordForge">
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
-    <DockPanel>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="4">
-            <Button Content="Characters" Command="{Binding ShowCharactersCommand}" Margin="2"/>
-            <Button Content="Locations" Command="{Binding ShowLocationsCommand}" Margin="2"/>
-            <Button Content="Items" Command="{Binding ShowItemsCommand}" Margin="2"/>
-            <Button Content="Timeline" Command="{Binding ShowTimelineCommand}" Margin="2"/>
+    <Grid RowDefinitions="Auto,*,1,Auto">
+        <!-- TopBar -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="4">
+            <Button Content="☰" Width="40" Height="40" Margin="2"/>
+            <!-- Primary group -->
+            <StackPanel Margin="8,0" VerticalAlignment="Center">
+                <TextBlock Text="Primary" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal">
+                    <ToggleButton Content="Right Pane" IsChecked="{Binding IsRightPaneVisible}" Command="{Binding ToggleRightPaneCommand}" Margin="2"/>
+                    <Button Content="Timeline" Command="{Binding ShowTimelineCenterCommand}" Margin="2"/>
+                    <Button Content="Outline" Command="{Binding ShowOutlineCenterCommand}" Margin="2"/>
+                </StackPanel>
+            </StackPanel>
+            <!-- Bibles group -->
+            <StackPanel Margin="8,0" VerticalAlignment="Center">
+                <TextBlock Text="Bibles" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="Character" Width="90" Command="{Binding ShowCharactersCommand}" Margin="2"/>
+                    <Button Content="Location" Width="90" Command="{Binding ShowLocationsCommand}" Margin="2"/>
+                    <Button Content="Item" Width="90" Command="{Binding ShowItemsCommand}" Margin="2"/>
+                </StackPanel>
+            </StackPanel>
+            <!-- Export group -->
+            <StackPanel Margin="8,0" VerticalAlignment="Center">
+                <TextBlock Text="EXPORT" FontWeight="Bold" HorizontalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal">
+                    <Button Content="PDF" Width="70" Command="{Binding ExportPdfCommand}" Margin="2"/>
+                    <Button Content="DOCX" Width="70" Command="{Binding ExportDocxCommand}" Margin="2"/>
+                    <Button Content="RTF" Width="70" Command="{Binding ExportRtfCommand}" Margin="2"/>
+                    <Button Content="TXT" Width="70" Command="{Binding ExportTxtCommand}" Margin="2"/>
+                </StackPanel>
+            </StackPanel>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="4">
-            <TextBlock Text="{Binding WordCount, StringFormat='Words: {0}'}" Margin="4,0"/>
-            <TextBlock Text="{Binding CharCount, StringFormat='Chars: {0}'}" Margin="4,0"/>
-            <ComboBox ItemsSource="{Binding Scopes}" SelectedItem="{Binding SelectedScope}" Width="120" Margin="4,0"/>
-        </StackPanel>
-        <Grid ColumnDefinitions="2*,4*,3*">
-            <TreeView ItemsSource="{Binding Project.Chapters}" SelectedItem="{Binding CurrentNode}">
-                <TreeView.DataTemplates>
-                    <TreeDataTemplate DataType="models:Chapter" ItemsSource="{Binding Scenes}">
-                        <TextBlock Text="{Binding Title}"/>
-                    </TreeDataTemplate>
-                    <TreeDataTemplate DataType="models:Scene">
-                        <TextBlock Text="{Binding Title}"/>
-                    </TreeDataTemplate>
-                </TreeView.DataTemplates>
-            </TreeView>
-            <TextBox Grid.Column="1" AcceptsReturn="True" Text="Transcript..."/>
-            <ContentControl Grid.Column="2" Content="{Binding RightPane.CurrentPane}"/>
+
+        <!-- Content area -->
+        <Grid Grid.Row="1" ColumnDefinitions="15*,60*,25*">
+            <!-- LeftNav -->
+            <StackPanel Grid.Column="0" Orientation="Vertical" Margin="4">
+                <Button Content="TRANSCRIPT" Command="{Binding ShowTranscriptCommand}" Width="120" Margin="2">
+                    <Button.Styles>
+                        <Style Selector="Button">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsTranscriptActive}" Value="True">
+                                    <Setter Property="Background" Value="#008000"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+                <Button Content="TIMELINE" Command="{Binding ShowTimelineCenterCommand}" Width="120" Margin="2">
+                    <Button.Styles>
+                        <Style Selector="Button">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsTimelineActive}" Value="True">
+                                    <Setter Property="Background" Value="#008000"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+                <Button Content="OUTLINE" Command="{Binding ShowOutlineCenterCommand}" Width="120" Margin="2">
+                    <Button.Styles>
+                        <Style Selector="Button">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsOutlineActive}" Value="True">
+                                    <Setter Property="Background" Value="#008000"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+                <Button Content="CHAR BIBLE" Command="{Binding ShowCharBibleCenterCommand}" Width="120" Margin="2">
+                    <Button.Styles>
+                        <Style Selector="Button">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsCharBibleActive}" Value="True">
+                                    <Setter Property="Background" Value="#008000"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+                <Button Content="LOC BIBLE" Command="{Binding ShowLocBibleCenterCommand}" Width="120" Margin="2">
+                    <Button.Styles>
+                        <Style Selector="Button">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsLocBibleActive}" Value="True">
+                                    <Setter Property="Background" Value="#008000"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+                <Button Content="ITEM BIBLE" Command="{Binding ShowItemBibleCenterCommand}" Width="120" Margin="2">
+                    <Button.Styles>
+                        <Style Selector="Button">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsItemBibleActive}" Value="True">
+                                    <Setter Property="Background" Value="#008000"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Styles>
+                </Button>
+            </StackPanel>
+
+            <!-- Center pane -->
+            <Grid Grid.Column="1" Margin="4">
+                <Grid IsVisible="{Binding IsTranscriptActive}">
+                    <DockPanel Margin="0,0,0,4">
+                        <TextBlock Text="TRANSCRIPT" FontWeight="Bold" DockPanel.Dock="Left"/>
+                        <Button Content="Insert Scene Break" Command="{Binding InsertSceneBreakCommand}" DockPanel.Dock="Right"/>
+                    </DockPanel>
+                    <TextBox AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Text="{Binding TranscriptText}"/>
+                </Grid>
+                <TextBlock IsVisible="{Binding IsTimelineActive}" Text="Timeline Pane" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock IsVisible="{Binding IsOutlineActive}" Text="Outline Pane" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock IsVisible="{Binding IsCharBibleActive}" Text="Character Bible" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock IsVisible="{Binding IsLocBibleActive}" Text="Location Bible" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock IsVisible="{Binding IsItemBibleActive}" Text="Item Bible" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+
+            <!-- Right pane -->
+            <ContentControl Grid.Column="2" Content="{Binding RightPane.CurrentPane}" IsVisible="{Binding IsRightPaneVisible}" Margin="4"/>
         </Grid>
-    </DockPanel>
+
+        <!-- Divider -->
+        <Border Grid.Row="2" Height="1" Background="Gray"/>
+
+        <!-- StatusBar -->
+        <Grid Grid.Row="3" ColumnDefinitions="Auto,Auto,*,Auto" Margin="4">
+            <TextBlock Grid.Column="0" Text="{Binding WordCount, StringFormat='Words: {0}'}" Margin="4,0"/>
+            <TextBlock Grid.Column="1" Text="{Binding CharCount, StringFormat='Chars: {0}'}" Margin="4,0"/>
+            <ComboBox Grid.Column="2" ItemsSource="{Binding Scopes}" SelectedItem="{Binding SelectedScope}" Width="120" Margin="4,0" IsVisible="{Binding IsTranscriptActive}"/>
+            <TextBlock Grid.Column="3" Text="{Binding StatusMessage}" HorizontalAlignment="Right" Margin="4,0"/>
+        </Grid>
+    </Grid>
 </Window>
