@@ -67,4 +67,12 @@ public partial class LeftMenu : UserControl
         main.CenterContentElement.Content = new ItemBibleView();
         AnimateMenus();
     }
+
+    private void LoreBibleButton_Click(object sender, RoutedEventArgs e)
+    {
+        var main = (MainWindow)Application.Current.MainWindow;
+        main.TopMenuContent.Content = new LoreBibleMenu();
+        main.CenterContentElement.Content = new LoreBibleView();
+        AnimateMenus();
+    }
 }

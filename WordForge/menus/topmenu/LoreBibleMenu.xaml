@@ -1,4 +1,4 @@
-<UserControl x:Class="WordForge.Menus.TopMenu.CharacterBibleMenu"
+<UserControl x:Class="WordForge.Menus.TopMenu.LoreBibleMenu"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:menus="clr-namespace:WordForge.Menus">
@@ -6,19 +6,14 @@
         <Grid Margin="12,12,12,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="40"/>
-                <!-- Hamburger -->
                 <ColumnDefinition Width="16"/>
                 <ColumnDefinition Width="140"/>
-                <!-- Title 'Right Pane' -->
                 <ColumnDefinition Width="16"/>
                 <ColumnDefinition Width="120"/>
-                <!-- Timeline -->
                 <ColumnDefinition Width="12"/>
                 <ColumnDefinition Width="120"/>
-                <!-- Outline -->
                 <ColumnDefinition Width="18"/>
                 <ColumnDefinition Width="330"/>
-                <!-- Bibles group -->
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="120"/>
             </Grid.ColumnDefinitions>
@@ -55,15 +50,15 @@
                     </Grid.RowDefinitions>
                     <TextBlock Text="Bibles" Foreground="#FFE5E7EB" FontWeight="Bold" HorizontalAlignment="Center"/>
                     <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button x:Name="CharacterButton" Width="90" Height="36" Margin="0,0,8,0"
+                                Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
+                                Foreground="#FF111111" FontWeight="SemiBold" Content="Character"/>
                         <Button x:Name="LocationButton" Width="90" Height="36" Margin="0,0,8,0"
                                 Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
                                 Foreground="#FF111111" FontWeight="SemiBold" Content="Location"/>
-                        <Button x:Name="ItemButton" Width="90" Height="36" Margin="0,0,8,0"
+                        <Button x:Name="ItemButton" Width="90" Height="36"
                                 Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
                                 Foreground="#FF111111" FontWeight="SemiBold" Content="Item"/>
-                        <Button x:Name="LoreButton" Width="90" Height="36"
-                                Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
-                                Foreground="#FF111111" FontWeight="SemiBold" Content="Lore"/>
                     </StackPanel>
                 </Grid>
             </Border>

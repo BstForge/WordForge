@@ -4,9 +4,9 @@ using WordForge;
 
 namespace WordForge.Menus.TopMenu;
 
-public partial class TranscriptMenu : UserControl
+public partial class LoreBibleMenu : UserControl
 {
-    public TranscriptMenu()
+    public LoreBibleMenu()
     {
         InitializeComponent();
         HamburgerButton.Click += HamburgerButton_Click;
@@ -15,7 +15,6 @@ public partial class TranscriptMenu : UserControl
         RightPaneService.BindButton(CharacterButton, RightPaneKind.Character);
         RightPaneService.BindButton(LocationButton, RightPaneKind.Location);
         RightPaneService.BindButton(ItemButton, RightPaneKind.Item);
-        RightPaneService.BindButton(LoreButton, RightPaneKind.Lore);
         CustomizeButton.Click += (_, __) => new CustomizeWindow { Owner = Application.Current.MainWindow }.ShowDialog();
     }
 

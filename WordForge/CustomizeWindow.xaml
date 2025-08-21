@@ -1,0 +1,43 @@
+<Window x:Class="WordForge.CustomizeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Customize Panes" Width="1000" Height="700"
+        WindowStartupLocation="CenterOwner" Background="#FF1A1B1E" FontFamily="Segoe UI">
+    <TabControl TabStripPlacement="Left" Background="#FF1A1B1E" Foreground="#FFE5E7EB">
+        <TabItem Header="Transcript">
+            <Grid Background="#FF232529">
+                <TextBlock Text="Transcript customization" Foreground="#FFE5E7EB" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Timeline">
+            <Grid Background="#FF232529">
+                <TextBlock Text="Timeline customization" Foreground="#FFE5E7EB" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Outline">
+            <Grid Background="#FF232529">
+                <TextBlock Text="Outline customization" Foreground="#FFE5E7EB" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Character Bible">
+            <Grid Background="#FF232529">
+                <TextBlock Text="Character Bible customization" Foreground="#FFE5E7EB" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Location Bible">
+            <Grid Background="#FF232529">
+                <TextBlock Text="Location Bible customization" Foreground="#FFE5E7EB" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Item Bible">
+            <Grid Background="#FF232529">
+                <TextBlock Text="Item Bible customization" Foreground="#FFE5E7EB" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Lore Bible">
+            <Grid Background="#FF232529">
+                <TextBlock Text="Lore Bible customization" Foreground="#FFE5E7EB" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+        </TabItem>
+    </TabControl>
+</Window>

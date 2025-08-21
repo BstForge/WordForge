@@ -20,6 +20,7 @@
                 <ColumnDefinition Width="330"/>
                 <!-- Bibles group -->
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="120"/>
             </Grid.ColumnDefinitions>
 
             <!-- Hamburger -->
@@ -57,12 +58,19 @@
                         <Button x:Name="CharacterButton" Width="90" Height="36" Margin="0,0,8,0"
                                 Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
                                 Foreground="#FF111111" FontWeight="SemiBold" Content="Character"/>
-                        <Button x:Name="ItemButton" Width="90" Height="36"
+                        <Button x:Name="ItemButton" Width="90" Height="36" Margin="0,0,8,0"
                                 Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
                                 Foreground="#FF111111" FontWeight="SemiBold" Content="Item"/>
+                        <Button x:Name="LoreButton" Width="90" Height="36"
+                                Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
+                                Foreground="#FF111111" FontWeight="SemiBold" Content="Lore"/>
                     </StackPanel>
                 </Grid>
             </Border>
+
+            <!-- Customize button -->
+            <Button x:Name="CustomizeButton" Grid.Column="10" Height="52" Width="120" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
+                    Foreground="#FF111111" FontWeight="Bold" Content="Customize" HorizontalAlignment="Right"/>
         </Grid>
     </Border>
 </UserControl>
