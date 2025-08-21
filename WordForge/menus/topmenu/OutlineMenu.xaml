@@ -1,7 +1,8 @@
 <UserControl x:Class="WordForge.Menus.TopMenu.OutlineMenu"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:menus="clr-namespace:WordForge.Menus">
+             xmlns:menus="clr-namespace:WordForge.Menus"
+             xmlns:top="clr-namespace:WordForge.Menus.TopMenu">
     <Border Background="#FF2A2D31" BorderBrush="#FF0F1012" BorderThickness="0,0,0,1">
         <Grid Margin="12,12,12,10">
             <Grid.ColumnDefinitions>
@@ -14,8 +15,11 @@
                 <ColumnDefinition Width="120"/>
                 <!-- Timeline -->
                 <ColumnDefinition Width="18"/>
-                <ColumnDefinition Width="330"/>
+                <ColumnDefinition Width="Auto" MinWidth="400"/>
                 <!-- Bibles group -->
+                <ColumnDefinition Width="18"/>
+                <ColumnDefinition Width="Auto" MinWidth="400"/>
+                <!-- Export group -->
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="120"/>
             </Grid.ColumnDefinitions>
@@ -47,7 +51,7 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <TextBlock Text="Bibles" Foreground="#FFE5E7EB" FontWeight="Bold" HorizontalAlignment="Center"/>
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <UniformGrid Grid.Row="2" Rows="1" Columns="4" HorizontalAlignment="Center">
                         <Button x:Name="CharacterButton" Width="90" Height="36" Margin="0,0,8,0"
                                 Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
                                 Foreground="#FF111111" FontWeight="SemiBold" Content="Character"/>
@@ -60,12 +64,14 @@
                         <Button x:Name="LoreButton" Width="90" Height="36"
                                 Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
                                 Foreground="#FF111111" FontWeight="SemiBold" Content="Lore"/>
-                    </StackPanel>
+                    </UniformGrid>
                 </Grid>
             </Border>
 
+            <top:ExportGroup Grid.Column="8" />
+
             <!-- Customize button -->
-            <Button x:Name="CustomizeButton" Grid.Column="8" Height="52" Width="120" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
+            <Button x:Name="CustomizeButton" Grid.Column="10" Height="52" Width="120" Background="#FFE5E7EB" BorderBrush="#FF9CA3AF"
                     Foreground="#FF111111" FontWeight="Bold" Content="Customize" HorizontalAlignment="Right"/>
         </Grid>
     </Border>

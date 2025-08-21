@@ -31,6 +31,7 @@ namespace WordForge
             TopMenuContent.Content = new TranscriptMenu();
             CenterContentElement.Content = new TranscriptView();
             RightPaneService.Show(RightPaneKind.Timeline);
+            StatusService.StatusChanged += message => Dispatcher.Invoke(() => StatusBarText.Text = message);
         }
     }
 }
