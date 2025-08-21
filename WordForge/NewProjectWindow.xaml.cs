@@ -12,6 +12,7 @@ public partial class NewProjectWindow : Window
     public string ProjectLocation => string.IsNullOrWhiteSpace(LocationBox.Text)
         ? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         : LocationBox.Text;
+    public bool IsLoad { get; private set; }
 
     public NewProjectWindow()
     {
@@ -28,12 +29,13 @@ public partial class NewProjectWindow : Window
             MessageBox.Show(this, "Title is required.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
+        IsLoad = false;
         DialogResult = true;
     }
 
     private void Cancel_Click(object sender, RoutedEventArgs e)
     {
-        DialogResult = false;
+        Application.Current.Shutdown();
     }
 
     private void ChooseFolder_Click(object sender, RoutedEventArgs e)
@@ -42,6 +44,16 @@ public partial class NewProjectWindow : Window
         if (dialog.ShowDialog() == WinForms.DialogResult.OK)
         {
             LocationBox.Text = dialog.SelectedPath;
+        }
+    }
+
+    private void LoadProject_Click(object sender, RoutedEventArgs e)
+    {
+        ProjectService.Load();
+        if (ProjectService.CurrentPath != null)
+        {
+            IsLoad = true;
+            DialogResult = true;
         }
     }
 }

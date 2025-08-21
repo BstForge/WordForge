@@ -59,6 +59,7 @@ public static class ProjectService
         var path = Path.Combine(directory, fileName);
         project.CreatedUtc = project.ModifiedUtc = DateTime.UtcNow;
         SaveProject(project, path);
+        InitializeUI();
     }
 
     public static void Save()
@@ -135,6 +136,7 @@ public static class ProjectService
                         {
                             SetCurrent(proj, path);
                             CurrentProject.IsDirty = true;
+                            InitializeUI();
                             return;
                         }
                     }
@@ -150,6 +152,7 @@ public static class ProjectService
                 if (project != null)
                 {
                     SetCurrent(project, path);
+                    InitializeUI();
                 }
             }
             catch (Exception ex)
@@ -373,6 +376,19 @@ public static class ProjectService
         SaveToPath(project, path);
         SetCurrent(project, path);
         AutosaveService.OnManualSave();
+    }
+
+    public static void InitializeUI()
+    {
+        if (Application.Current.MainWindow is not MainWindow main)
+            return;
+
+        main.Title = $"WordForge - {CurrentProject.Title}";
+        main.TopMenuContent.Content = new Menus.TopMenu.TranscriptMenu();
+        var view = new Views.TranscriptView();
+        main.CenterContentElement.Content = view;
+        RightPaneService.Show(RightPaneService.CurrentPane);
+        view.InitializeSelection();
     }
 
     internal static string GetAutosavePath(string path)

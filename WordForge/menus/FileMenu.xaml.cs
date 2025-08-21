@@ -16,13 +16,16 @@ public partial class FileMenu : UserControl
         var window = new NewProjectWindow { Owner = Application.Current.MainWindow };
         if (window.ShowDialog() == true)
         {
-            var project = new Project
+            if (!window.IsLoad)
             {
-                Title = window.ProjectTitle,
-                Author = window.ProjectAuthor,
-                Genre = window.ProjectGenre
-            };
-            ProjectService.CreateNew(project, window.ProjectLocation);
+                var project = new Project
+                {
+                    Title = window.ProjectTitle,
+                    Author = window.ProjectAuthor,
+                    Genre = window.ProjectGenre
+                };
+                ProjectService.CreateNew(project, window.ProjectLocation);
+            }
         }
     }
 

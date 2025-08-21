@@ -93,6 +93,34 @@ public partial class TranscriptView : UserControl
         }
     }
 
+    public void InitializeSelection()
+    {
+        if (ProjectService.CurrentProject.Chapters.Count == 0)
+        {
+            ClearSelection();
+            Editor.Text = string.Empty;
+            UpdateCounts();
+            return;
+        }
+
+        var firstChapter = ProjectService.CurrentProject.Chapters[0];
+        if (firstChapter.Scenes.Count > 0)
+        {
+            _selectedScene = firstChapter.Scenes[0];
+            _selectedChapter = null;
+            SelectItem(_selectedScene);
+            Editor.Text = _selectedScene.Text;
+        }
+        else
+        {
+            _selectedScene = null;
+            _selectedChapter = firstChapter;
+            SelectItem(firstChapter);
+            Editor.Text = string.Join("\n***\n", firstChapter.Scenes.Select(s => s.Text));
+        }
+        UpdateCounts();
+    }
+
     private void AddChapter_Click(object sender, RoutedEventArgs e)
     {
         var chapter = new Chapter { Title = $"Chapter {ProjectService.CurrentProject.Chapters.Count + 1}" };

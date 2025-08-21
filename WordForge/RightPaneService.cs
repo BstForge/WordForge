@@ -12,7 +12,8 @@ public enum RightPaneKind
     Outline,
     Character,
     Location,
-    Item
+    Item,
+    Lore
 }
 
 public static class RightPaneService
@@ -37,6 +38,7 @@ public static class RightPaneService
                     RightPaneKind.Character => new CharacterBiblePane(),
                     RightPaneKind.Location => new LocationBiblePane(),
                     RightPaneKind.Item => new ItemBiblePane(),
+                    RightPaneKind.Lore => new LoreBiblePane(),
                     _ => new TimelinePane()
                 };
             }

@@ -14,6 +14,8 @@ public partial class LocationBibleMenu : UserControl
         RightPaneService.BindButton(OutlineButton, RightPaneKind.Outline);
         RightPaneService.BindButton(CharacterButton, RightPaneKind.Character);
         RightPaneService.BindButton(ItemButton, RightPaneKind.Item);
+        RightPaneService.BindButton(LoreButton, RightPaneKind.Lore);
+        CustomizeButton.Click += (_, __) => new CustomizeWindow { Owner = Application.Current.MainWindow }.ShowDialog();
     }
 
     private void HamburgerButton_Click(object sender, RoutedEventArgs e)

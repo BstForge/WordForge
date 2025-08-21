@@ -39,6 +39,12 @@
                     <TextBlock Text="ITEM BIBLE" FontWeight="Bold" FontSize="10" HorizontalAlignment="Center"/>
                 </StackPanel>
             </Button>
+            <Button x:Name="LoreBibleButton" Width="96" Height="56" Background="#FF2A2D31" BorderBrush="#FF3B3F45" Foreground="#FFE5E7EB" Cursor="Hand" Click="LoreBibleButton_Click">
+                <StackPanel>
+                    <Rectangle Height="20" Width="20" Fill="#FFBFC5CD" HorizontalAlignment="Center" Margin="0,4,0,2"/>
+                    <TextBlock Text="LORE BIBLE" FontWeight="Bold" FontSize="10" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Button>
         </StackPanel>
     </Border>
 </UserControl>
