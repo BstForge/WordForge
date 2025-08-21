@@ -50,7 +50,7 @@
 
         <!-- ===== BOTTOM AD / INFO BAR ===== -->
         <Border Grid.Row="2" Background="#FF111315" BorderBrush="#FF30D158" BorderThickness="1,1,1,0">
-            <TextBlock Text="Ad/Info Area" Foreground="#FF30D158" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock x:Name="StatusBarText" Text="Ready" Foreground="#FF30D158" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         </Border>
     </Grid>
 </Window>

@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Controls.Primitives;
 using System.Windows.Threading;
 using WordForge;
+using WordForge.ViewModels;
 
 namespace WordForge.Views;
 
@@ -17,6 +18,7 @@ public partial class TranscriptView : UserControl
     private Chapter? _selectedChapter;
     private Scene? _selectedScene;
     private static bool _sidebarCollapsed = false;
+    private readonly TranscriptViewModel _viewModel = new();
     private Point _dragStartPoint;
     private DependencyObject? _dragStartSource;
     private object? _draggedData;
@@ -54,7 +56,8 @@ public partial class TranscriptView : UserControl
     public TranscriptView()
     {
         InitializeComponent();
-        DataContext = ProjectService.CurrentProject;
+        DataContext = _viewModel;
+        _viewModel.PropertyChanged += ViewModel_PropertyChanged;
         _sceneCheckTimer.Tick += SceneCheckTimer_Tick;
         ProjectService.BeforeSave += OnBeforeSave;
         Unloaded += TranscriptView_Unloaded;
@@ -67,6 +70,14 @@ public partial class TranscriptView : UserControl
             AddChapterButton.Visibility = Visibility.Collapsed;
             AddChapterBar.Visibility = Visibility.Collapsed;
             CollapseButton.Content = ">";
+        }
+    }
+
+    private void ViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(TranscriptViewModel.CountScope))
+        {
+            UpdateCounts();
         }
     }
 
@@ -416,18 +427,72 @@ public partial class TranscriptView : UserControl
 
     private void UpdateCounts()
     {
-        var lines = Editor.Text.Replace("\r", string.Empty).Split('\n');
-        if (_selectedChapter != null)
+        ValidateScope();
+        string text = _viewModel.CountScope switch
         {
-            lines = lines.Where(l => !SceneBreakRegex.IsMatch(l)).ToArray();
-        }
-        var text = string.Join("\n", lines);
+            CountScope.Scene => _selectedScene?.Text ?? string.Empty,
+            CountScope.Chapter => GetChapterText(),
+            CountScope.Project => GetProjectText(),
+            _ => string.Empty
+        };
         var words = string.IsNullOrWhiteSpace(text)
             ? 0
             : text.Split(new[] { ' ', '\n', '\r', '\t' }, StringSplitOptions.RemoveEmptyEntries).Length;
         var chars = text.Replace("\n", string.Empty).Length;
         WordCountText.Text = $"Words: {words}";
         CharCountText.Text = $"Characters: {chars}";
+    }
+
+    private string GetChapterText()
+    {
+        if (_selectedChapter != null)
+        {
+            return string.Join("\n", _selectedChapter.Scenes.Select(s => s.Text));
+        }
+        if (_selectedScene != null)
+        {
+            var ch = ProjectService.CurrentProject.Chapters.FirstOrDefault(c => c.Scenes.Contains(_selectedScene));
+            if (ch != null)
+            {
+                return string.Join("\n", ch.Scenes.Select(s => s.Text));
+            }
+            return _selectedScene.Text;
+        }
+        return string.Empty;
+    }
+
+    private string GetProjectText()
+    {
+        return string.Join("\n", ProjectService.CurrentProject.Chapters.SelectMany(c => c.Scenes).Select(s => s.Text));
+    }
+
+    private void ValidateScope()
+    {
+        SceneScopeItem.Visibility = _selectedScene != null ? Visibility.Visible : Visibility.Collapsed;
+
+        if (!TranscriptViewModel.ScopePersisted)
+        {
+            if (_selectedScene != null)
+                _viewModel.CountScope = CountScope.Scene;
+            else if (_selectedChapter != null)
+                _viewModel.CountScope = CountScope.Chapter;
+            else
+                _viewModel.CountScope = CountScope.Project;
+            return;
+        }
+
+        if (_selectedScene == null && _viewModel.CountScope == CountScope.Scene)
+        {
+            _viewModel.CountScope = _selectedChapter != null ? CountScope.Chapter : CountScope.Project;
+        }
+        if (_selectedScene == null && _selectedChapter == null)
+        {
+            _viewModel.CountScope = CountScope.Project;
+        }
+        if (_selectedChapter == null && _viewModel.CountScope == CountScope.Chapter)
+        {
+            _viewModel.CountScope = CountScope.Project;
+        }
     }
 
     private List<string> GetSegments(string text) => SceneBreakRegex.Split(text).ToList();
