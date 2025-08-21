@@ -16,7 +16,12 @@ public partial class FileMenu : UserControl
         var window = new NewProjectWindow { Owner = Application.Current.MainWindow };
         if (window.ShowDialog() == true)
         {
-            if (!window.IsLoad)
+            if (window.IsLoad)
+            {
+                if (!string.IsNullOrWhiteSpace(window.LoadedForgePath))
+                    ProjectService.Load(window.LoadedForgePath);
+            }
+            else
             {
                 var project = new Project
                 {

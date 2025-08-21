@@ -13,7 +13,10 @@ public partial class NewProjectWindow : Window
     public string ProjectLocation => string.IsNullOrWhiteSpace(LocationBox.Text)
         ? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         : LocationBox.Text;
-    public StartupResult Result { get; private set; } = new() { Action = StartupAction.Cancel };
+
+    public bool IsLoad { get; private set; }
+
+    public string? LoadedForgePath { get; private set; }
 
     public NewProjectWindow()
     {
@@ -30,21 +33,16 @@ public partial class NewProjectWindow : Window
             MessageBox.Show(this, "Title is required.", "Validation", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
-        Result = new StartupResult
-        {
-            Action = StartupAction.New,
-            Title = ProjectTitle,
-            Author = ProjectAuthor,
-            Genre = ProjectGenre,
-            FolderPath = ProjectLocation
-        };
+
+        IsLoad = false;
         DialogResult = true;
+        Close();
     }
 
     private void Cancel_Click(object sender, RoutedEventArgs e)
     {
-        Result = new StartupResult { Action = StartupAction.Cancel };
         DialogResult = false;
+        Close();
     }
 
     private void ChooseFolder_Click(object sender, RoutedEventArgs e)
@@ -64,14 +62,13 @@ public partial class NewProjectWindow : Window
             DefaultExt = ".forge",
             InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         };
+
         if (dialog.ShowDialog() == true)
         {
-            Result = new StartupResult
-            {
-                Action = StartupAction.Load,
-                LoadPath = dialog.FileName
-            };
+            LoadedForgePath = dialog.FileName;
+            IsLoad = true;
             DialogResult = true;
+            Close();
         }
     }
 }
