@@ -21,4 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="../WordForge.Core/WordForge.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <AvaloniaXaml Update="**/*.axaml" />
+  </ItemGroup>
 </Project>
