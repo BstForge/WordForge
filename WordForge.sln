@@ -5,6 +5,10 @@ VisualStudioVersion = 17.14.36121.58 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordForge", "WordForge\WordForge.csproj", "{26C9B0B8-A817-414C-B945-C95A40D0CAFC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordForge.Core", "WordForge.Core\WordForge.Core.csproj", "{DC6922FC-8B81-49B9-A490-3C71591EF0D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WordForge.Desktop", "WordForge.Desktop\WordForge.Desktop.csproj", "{30B9C192-F7F7-4AAD-B27C-81AE45BE1013}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{26C9B0B8-A817-414C-B945-C95A40D0CAFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26C9B0B8-A817-414C-B945-C95A40D0CAFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26C9B0B8-A817-414C-B945-C95A40D0CAFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC6922FC-8B81-49B9-A490-3C71591EF0D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC6922FC-8B81-49B9-A490-3C71591EF0D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC6922FC-8B81-49B9-A490-3C71591EF0D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC6922FC-8B81-49B9-A490-3C71591EF0D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30B9C192-F7F7-4AAD-B27C-81AE45BE1013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30B9C192-F7F7-4AAD-B27C-81AE45BE1013}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30B9C192-F7F7-4AAD-B27C-81AE45BE1013}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30B9C192-F7F7-4AAD-B27C-81AE45BE1013}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
