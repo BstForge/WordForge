@@ -49,6 +49,19 @@ public static class ProjectService
 
     public static string? CurrentPath { get; private set; } = null;
 
+    public static void StartNew(Project project, string? directory)
+    {
+        directory = string.IsNullOrWhiteSpace(directory)
+            ? Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+            : directory;
+        Directory.CreateDirectory(directory);
+        var fileName = SanitizeFileName(project.Title) + ".forge";
+        var path = Path.Combine(directory, fileName);
+        project.CreatedUtc = project.ModifiedUtc = DateTime.UtcNow;
+        SetCurrent(project, path);
+        CurrentProject.IsDirty = true;
+    }
+
     public static void CreateNew(Project project, string? directory)
     {
         directory = string.IsNullOrWhiteSpace(directory)
@@ -160,6 +173,24 @@ public static class ProjectService
                 MessageBox.Show(ex.Message, "Load", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+    }
+
+    public static bool LoadFromFile(string path)
+    {
+        try
+        {
+            var project = LoadFromPath(path);
+            if (project != null)
+            {
+                SetCurrent(project, path);
+                return true;
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(ex.Message, "Load", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        return false;
     }
 
     internal static void SaveToPath(Project project, string path, bool markClean = true)
